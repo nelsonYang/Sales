@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="keywords" content="微乐,weile,welove,精确营销，精准营销，网络精确营销，网络精准营销，微乐营销，微乐网络营销，微乐广告营销,微乐互联网营销，移动互联网精确营销，微乐币，乐币"/>
+        <meta name="description" content="微乐是一个基于智能手机运营的精确营销平台。为企业提供最专业的移动互联网精确营销服务。全国统一服务热线400-020-9898."/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0, user-scalable=no">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="apple-touch-fullscreen" content="yes"/>
+        <meta name="format-detection" content="telphone=no"/>
+        <title>微乐支付公告</title>
+        <script src="http://map.qq.com/api/js?v=2.exp"></script>
+        <style>
+            /* css reset */
+            html, body, h1, h2, h3, h4, h5, h6, p, dl, dt, dd, ul, ol, li, form, fieldset, button, input, textarea { margin: 0; padding: 0; -webkit-user-select: none; -webkit-touch-callout: none; }
+            input[type="text"], input[type="tel"], input[type="password"], textarea { -webkit-user-select: text; }
+            body, button, input, select, textarea { font: 12px "Helvetica Neue",Helvetica,Arial,Sans-serif; }
+            h1, h2, h3, h4, h5, h6 { font-size: 100%; }
+            ul, ol { list-style: none; }
+            a { text-decoration: none; }
+            img { border: 0; }
+            input,button,textarea,select { -webkit-appearance: none; }
+            button, input, select, textarea, label, a { -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
+            html { background: #f8f8f8; }
+            body { background: #f8f8f8; color: #333; font-size: 16px; }
+            h1, h2, h3, h4, h5, h6 { font-weight: normal; }
+            .con { margin: 15px 12px; }
+            .con h1 { height: 36px; padding-left: 36px; margin-bottom: 15px; font-size: 20px; line-height: 36px; color: #333; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABIBAMAAACnw650AAAAKlBMVEUAAABFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUUZDU7BAAAADXRSTlMADoBrV7BE5s0hNZD0CjlN9gAAAYtJREFUSMft1TFLw0AUB/DUWqu1Qh0chS7iJLiL4KLiECi6uHSTOkhBcBGh0EXEQYjgKji6FAqCm+DgGmhrolXzvouNXPLu7r2XoYtL/9trf5C79+4SZ5L/TWnj0I8unx6yzEkL/hI9y2YX0pxVBHMMWt54swRGrjkzA1bWGbRmox9q5oGkRtALRaFtptQfweIoTVV0LZT83ouLoireTZMDlb6OwDPQLKh8xVU5qU7J0xAtA/s8n0egT3AaCCJdx5XCt4l6GuqY6D4tA9puikJu3fChEF15CUzUwXorRXkZVbljEihEj0vBQk2s2zg5HuH0cKA4LReYbi6MgzY5VM5EdOEDdbvowgsyamMzZVTjxhLtNBpHLay7dMAYOmBHRh45dDRD7kbB5+3omt+wx7csNbOvobzUgqqjRUIVHbk2wgpT5NGrgeZ4ZH0ZXG53A+G9Ooz7VJferPXMdtMzRc+SPL+QGuw6dpvJo2kuqMCd4/bZ5FY14zlSthNzUHHk3K1c+XC+v+dMMkZ+AStCW4dK1ij/AAAAAElFTkSuQmCC) no-repeat; background-size: auto 100%; }
+            .con p { margin-left: 8px; border-left: 3px solid #fe3e4d; padding-left: 10px; font-size: 16px; line-height: 1.5; color: #454545; }
+        </style>
+    </head>
+    <body>
+        <div class="con">
+            <h1>关于支付充值暂停的公告</h1>
+            <p>因服务器软硬件升级，支付宝充值服务暂停使用。给您带来不便，敬请谅解！谢谢您对微乐的支持！</p>
+            <p style="text-align: right; border-left: 0; margin-top: 15px; ">微乐团队</p>
+            <p style="text-align: right; border-left: 0; ">2014-3-24</p>
+        </div>
+        <div>
+            <!--<button id="testBtn" type="button">图片上传</button>-->
+            <!--<input id="testBtn" type="button" value="图片上传">-->
+            <div id="testBtn">图片上传</div>
+            <div id="testPrev"></div>
+        </div>
+        <script>
+            seajs.use(['jquery', 'plugins/uploader/imageUploader.js'], function($, Uploader) {
+                $('#testPrev').imageUpload({
+                    btn_id: 'testBtn',
+                    change_callback: function(o) {
+                        console.log(o);
+                    }
+                });
+                //        console.log(Uploader)
+                //        Uploader({btnId: 'testBtn', previewId: 'testPrev'});
+                // 初始化Web Uploader
+                //        var uploader = WebUploader.create({
+                //
+                //            // 选完文件后，是否自动上传。
+                //            auto: true,
+                //
+                //            // swf文件路径
+                //            swf: 'http://linc.wxpt.com/js/plugins/uploader/webUploader/webuploader' + '/js/Uploader.swf',
+                //
+                //            // 文件接收服务端。
+                //            server: 'http://webuploader.duapp.com/server/fileupload.php',
+                //
+                //            // 选择文件的按钮。可选。
+                //            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+                //            pick: '#filePicker',
+                //
+                //            // 只允许选择图片文件。
+                //            accept: {
+                //                title: 'Images',
+                //                extensions: 'gif,jpg,jpeg,bmp,png',
+                //                mimeTypes: 'image/*'
+                //            }
+                //        });
+            });
+        </script>
+    </body>
+</html>

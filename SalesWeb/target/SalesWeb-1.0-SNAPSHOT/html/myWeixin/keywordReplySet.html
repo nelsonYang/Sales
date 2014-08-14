@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>关键词回复 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/myWeixin/firstFollowSet.html">首次关注设置</a></li>
+        <li><a href="#html/myWeixin/menuSet.html">自定义菜单设置</a></li>
+        <li><a href="#html/myWeixin/keywordReplySet.html" class="current">关键词回复设置</a></li>
+        <li><a href="#html/myWeixin/weixinTokenSet.html">微信接口配置</a></li>
+        <li><a href="#html/myWeixin/weixinAuthSet.html">微信授权配置</a></li>
+        <!-- <li><a href="javascript:;">推广渠道管理</a></li> -->
+        <!--<li><a href="javascript:;">便民工具管理</a></li>-->
+    </ul>
+    <div class="form-box">
+        <form method="post" id="keywordForm">
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="keyword"><b>*</b>关键词：</label>
+                </div>
+                <div class="inner-group fl">
+                    <div class="textarea-box clearfix">
+                        <textarea name="keyword" class="normal-textarea" id="keyword" cols="30" rows="5"></textarea>
+                    </div>
+                    <div class="tip-box">多个关键词，请每行填写一个</div>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="matchType"><b>*</b>匹配模式：</label>
+                </div>
+                <div class="inner-group fl">
+                    <div class="radio-box clearfix">
+                        <input type="radio" name="matchType" id="matchType-1" checked="checked" value="1">
+                        <span class="fl">精确匹配</span>
+                        <span class="tip-line fl">&nbsp;(用户输入的文字和此关键词一样才会触发)</span>
+                    </div>
+                    <div class="radio-box clearfix">
+                        <input type="radio" name="matchType" id="matchType-2" value="0">
+                        <span class="fl">模糊匹配</span>
+                        <span class="tip-line fl">&nbsp;(只要用户输入的文字包含此关键词就触)</span>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="responseContentType"><b>*</b>回复类型：</label>
+                </div>
+                <div class="select-box fl">
+                    <select name="responseContentType" id="responseContentType">
+                        <option value="1">文字消息</option>
+                        <option value="2">图文消息</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="responseContent"><b>*</b>回复内容：</label>
+                </div>
+                <div class="textarea-box fl" id="content-box">
+                    <textarea name="responseContent" class="normal-textarea" id="responseContent" cols="30" rows="5"></textarea>
+                </div>
+                <div class="select-box fl dn" id="select-box">
+                    <div id="menu"></div>
+                    <div class="text-box fl">
+                        <a href="#html/source/imageTextList.html">素材管理</a>
+                    </div>
+                </div>
+            </div>
+            <div class="button-box ml125 pt20">
+                <input type="submit" class="green-btn sub-btn" value="确认提交">
+                <input type="button" class="gray-btn small-sub-btn ml20" value="取消">
+            </div>
+        </form>   
+    </div>
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'validation', 'tip', 'jump', 'search', 'formFill', 'modules/menuList.js'], function($, REQUEST, validate, TIP, JUMP, SEARCH, FILL, MENU) {
+            var $subBtn = $("#sub-btn");
+            var $keywordForm = $("#keywordForm");
+            var param = SEARCH.get();
+            var responseMessageCfgId = param.keywordId;
+            var queryUrl;
+            var $contentBox = $("#content-box");
+            var $selectBox = $("#select-box");
+            var $menu = $('#menu');
+            MENU.showMenu($menu);
+            $("#responseContentType").on("change", function() {
+                if (this.value == 1) {
+                    $contentBox.show();
+                    $selectBox.hide().children().children().eq(0).attr("selected", "selected");
+                } else {
+                    $selectBox.show();
+                    $contentBox.hide().children('textarea').val("");
+                }
+            });
+            if (responseMessageCfgId) {
+                REQUEST.post(REQUEST.url('inquireResponseMessageCfgById'), {"encryptType": 1, "data": {"responseMessageCfgId": responseMessageCfgId}}, function(res) {
+                    if (res.resultCode == 0) {
+                        var res = res.data;
+                        if (res.responseContentType == 1) {
+                            $contentBox.show();
+                            $selectBox.hide();
+                        } else {
+                            $selectBox.show();
+                            $contentBox.hide();
+                        }
+                        FILL.fill($keywordForm, res);
+                    } else {
+                        TIP.show(2, "查询信息失败");
+                    }
+                });
+
+            }
+            // 关键词回复详情;
+            if (responseMessageCfgId) {
+                queryUrl = REQUEST.url('updateResponseMessageCfg');
+            } else {
+                queryUrl = REQUEST.url('insertResponseMessageCfg');
+            }
+            $keywordForm.validate({
+                ignore: "",
+                submitHandler: function(form) {
+                    $subBtn.addClass('sub-ing').val("提交中...");
+                    var param = {"encryptType": 1, "data": {"type": 13}};
+                    responseMessageCfgId && (param.data.responseMessageCfgId = responseMessageCfgId);
+                    REQUEST.form(form, queryUrl, param, function(res) {
+                        if (res.resultCode == 0) {
+                            TIP.show(1, "操作成功");
+                            setTimeout((function() {
+                                JUMP.to('html/myWeixin/keywordReplyList.html');
+                            }), 1000);
+                        } else {
+                            TIP.show(2, "操作失败");
+                            $subBtn.removeClass('sub-ing').val("确认提交");
+                        }
+                    });
+                },
+                rules: {
+                    keyword: {required: true},
+                    responseContentType: {required: true}
+                },
+                messages: {
+                    keyword: {required: "请输入关键字"},
+                    responseContentType: {required: "请选择回复类型"}
+
+                }
+            });
+        });
+    </script>
+</body>
+</html>

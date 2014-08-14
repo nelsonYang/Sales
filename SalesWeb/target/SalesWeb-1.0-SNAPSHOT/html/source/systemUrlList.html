@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>系统URL查询 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/source/imageTextList.html">图文消息管理</a></li>
+        <li><a href="#html/source/urlList.html">自定义URL</a></li>
+        <li><a href="#html/source/systemUrlList.html" class="current">系统URL查询</a></li>
+    </ul>
+    <!-- 表格 -->
+    <div class="table-box pt20">
+        <table>
+            <thead>
+            <th class="w150">系统URL ID</th>
+            <th class="w200">名称</th>
+            <th>URL</th>
+            <th class="w100">操作</th>
+            </thead>
+            <tbody id="table-list">
+            </tbody>
+        </table>
+    </div>
+    <!-- 分页 -->
+    <div class="page-box" id="page-box"></div>
+    <!-- 模板 -->
+    <script id="systemUrlListTemplate" type="text/html">
+        <% var url, urlId; %>
+        <% for ( i = 0, len = dataList.length; i < len; i++ ) { url = dataList[i]; resourcesId = url.resourcesId; %>
+        <tr>
+        <td><%=resourcesId%></td>
+        <td><%=url.resourcesName%></td>
+        <td><%=url.resourcesURL%></td>
+        <td>
+        <a href="javascript:;" data-id="<%=responseMessageCfgId%>" class="opt">删除</a>
+        </td>
+        </tr>
+        <% }%>
+    </script>
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'template', 'pager', 'validation', 'tip'], function($, REQUEST, template, pager, validate, TIP) {
+            var $tableList = $("#table-list");
+            var $pageBox = $('#page-box');
+            var $subBtn = $("#sub-btn");
+            var queryUrl = '';
+
+            $pageBox.pager({
+                form: "",
+                url: REQUEST.url("inquirePageResourcesURLList"),
+                param: {"data": {"pageNo": 1, "pageCount": 10, "resourcesType": 5}, "encryptType": 1},
+                callback: function(res) {
+                    if (res.resultCode == 0) {
+                        res = res.data;
+                        res.dataList && $tableList.html(template.render('systemUrlListTemplate', res));
+                    } else {
+                        TIP.show(2, "查询失败");
+                    }
+                }
+            });
+
+            /*var deleteUrl = REQUEST.url('deleteResponseMessageCfg');
+             $tableList.on("click", ".opt", function(){
+             var $this = $(this);
+             REQUEST.post(deleteUrl, { "data": { "responseMessageCfgId": $this.attr("data-id") } }, function(res){
+             if ( res.resultCode == 0 ) {
+             TIP.show(1, "操作成功");
+             $this.parents("tr").remove();
+             } else {
+             TIP.show(2, "操作失败");
+             }
+             });
+             });*/
+        });
+
+    </script>
+</body>
+</html>

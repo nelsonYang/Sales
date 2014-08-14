@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>微信接口配置 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/myWeixin/firstFollowSet.html">首次关注设置</a></li>
+        <li><a href="#html/myWeixin/menuSet.html">自定义菜单设置</a></li>
+        <li><a href="#html/myWeixin/keywordReplySet.html">关键词回复设置</a></li>
+        <li><a href="#html/myWeixin/weixinTokenSet.html" class="current">微信接口配置</a></li>
+        <li><a href="#html/myWeixin/weixinAuthSet.html">微信授权配置</a></li>
+       <!--<li><a href="javascript:;">便民工具管理</a></li>-->
+    </ul>
+
+    <div class="form-box">
+        <h2>你已成功绑定微信公众平台，绑定信息：</h2>
+        <form method="post" id="weixinTokenForm">
+            <div id="weixinApiInfo">
+                <div class="form-group clearfix">
+                    <div class="label-item fl">
+                        <label class="input-item">帐号名称：</label>
+                    </div>
+                    <div class="text-box fl"><strong id="weixinName"></strong></div>
+                </div>
+                <div class="form-group clearfix">
+                    <div class="label-item fl">
+                        <label class="input-item">接口URL：</label>
+                    </div>
+                    <div class="text-box fl"><strong id="weixinURL"></strong></div>
+                </div>
+                <div class="form-group clearfix">
+                    <div class="label-item fl">
+                        <label class="input-item">接口Token：</label>
+                    </div>
+                    <div class="text-box fl"><strong id="accessToken" style="word-break: break-all;"></strong></div>
+                </div>
+                <div class="button-box ml125 pt20">
+                    <input type="button" class="green-btn sub-btn" id="editWeixinApi" value="修改绑定">
+                </div>
+            </div>
+            <div class="dn" id="weixinApiForm">
+                <div class="form-group clearfix">
+                    <div class="label-item fl">
+                        <label class="input-item" for="weixinNO"><b>*</b>帐号名称：</label>
+                    </div>
+                    <div class="input-box fl"><input type="text" class="normal-input" name="weixinNO" id="weixinNO">
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <div class="label-item fl">
+                        <label class="input-item" for="weixinDevAPI"><b>*</b>接口URL：</label>
+                    </div>
+                    <div class="input-box fl"><input type="text" class="normal-input" name="weixinDevAPI" id="weixinDevAPI">
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <div class="label-item fl">
+                        <label class="input-item" for="validateToken"><b>*</b>接口Token：</label>
+                    </div>
+                    <div class="input-box fl"><input type="text" class="normal-input" name="validateToken" id="validateToken">
+                    </div>
+                </div>
+                <div class="button-box ml125 pt20">
+                    <input type="submit" class="green-btn sub-btn" id="sub-btn" value="确认提交">
+                    <input type="button" class="gray-btn small-sub-btn ml20" id="cancelBtn" value="取消">
+                </div>
+            </div>
+        </form>   
+    </div>
+
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'validation', 'tip'], function($, REQUEST, validate, TIP) {
+            var $weixinApiInfo = $("#weixinApiInfo");
+            var $weixinApiForm = $("#weixinApiForm");
+            var $subBtn = $("#sub-btn");
+            $("#editWeixinApi").on("click", function() {
+                $weixinApiInfo.hide();
+                $weixinApiForm.show();
+            });
+            $("#cancelBtn").on("click", function() {
+                $weixinApiInfo.show();
+                $weixinApiForm.hide();
+            });
+            getServiceAccount();
+            // 获取接口名称
+            function getServiceAccount() {
+                REQUEST.post(REQUEST.url('inquireServiceAccount'), {}, function(res) {
+                    if (res.resultCode == 0) {
+                        var res = res.data;
+                        // console.log(res);
+                        $("#weixinName").text(res.weixinNO);
+                        $("#weixinURL").text(res.weixinDevAPI);
+                        $("#accessToken").text(res.accessToken);
+                    } else {
+                        TIP.show(2, "查询信息失败");
+                    }
+                });
+            }
+
+            $("#weixinTokenForm").validate({
+                ignore: "",
+                submitHandler: function(form) {
+                    $subBtn.addClass('sub-ing').val("提交中...");
+                    REQUEST.form(form, REQUEST.url('bindWeixinInterface'), {"encryptType": 1}, function(res) {
+                        $subBtn.removeClass('sub-ing').val("确认提交");
+                        if (res.resultCode == 0) {
+                            TIP.show(1, "绑定成功");
+                            getServiceAccount();
+                            // JUMP.to('html/myWeixin/keywordReplyList.html');
+                            // setTimeout((function(){location.href="login.html"}), 500);
+                        } else {
+                            TIP.show(2, "绑定失败");
+                        }
+                    });
+                },
+                rules: {
+                    weixinNO: {required: true},
+                    weixinDevAPI: {required: true},
+                    validateToken: {required: true}
+                },
+                messages: {
+                    weixinNO: {required: "请输入帐号名称"},
+                    weixinDevAPI: {required: "请输入接口URL"},
+                    validateToken: {required: "请输入接口Token"}
+                }
+            });
+        });
+    </script>
+</body>
+</html>

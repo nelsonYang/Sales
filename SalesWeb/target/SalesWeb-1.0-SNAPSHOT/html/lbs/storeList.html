@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>门店管理 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/lbs/lbsSet.html">基本设置</a></li>
+        <li><a href="#html/lbs/storeList.html" class="current">门店管理</a></li>
+    </ul>
+    <div class="button-box ml10 mb10 pt20">
+        <a href="#html/lbs/storeSet.html" class="blue-btn normal-btn">新增门店</a>
+        <span class="ml10"><strong>提示：</strong>向公众帐号发送地理位置信息即可查看距离最近的门店信息并一键导航到门店</span>
+    </div>
+    <!-- 表格 -->
+    <div class="table-box">
+        <table>
+            <thead>
+            <th class="w100">序号</th>
+            <th class="w300">门店名称</th>
+            <th class="w150">联系电话</th>
+            <th>详细地址</th>
+            <th class="w150">操作</th>
+            </thead>
+            <tbody id="table-list">
+            </tbody>
+        </table>
+    </div>
+    <!-- 分页 -->
+    <div class="page-box" id="page-box"></div>
+    <!-- 模板 -->
+    <script id="storeListTemplate" type="text/html">
+        <% var store, storeId; %>
+        <% for ( i = 0, len = dataList.length; i < len; i++ ) { store = dataList[i]; storeId = store.merchantId; %>
+        <tr>
+        <td><%=storeId%></td>
+        <td><%=store.merchantName%></td>
+        <td><%=store.telphone%></td>
+        <td><%=store.address%></td>
+        <td>
+        <a href="#html/lbs/storeSet.html?storeId=<%=storeId%>">编辑</a>
+        <a href="javascript:;" data-id="<%=storeId%>" class="opt">删除</a>
+        </td>
+        </tr>
+        <% }%>
+    </script>
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'template', 'pager', 'validation', 'tip'], function($, REQUEST, template, pager, validate, TIP) {
+            var $tableList = $("#table-list");
+            var $pageBox = $('#page-box');
+            var $subBtn = $("#sub-btn");
+            var queryUrl = REQUEST.url("inquirePageMerchantList");
+            $pageBox.pager({
+                form: "",
+                url: queryUrl,
+                param: {"data": {"pageNo": 1, "pageCount": 10}, "encryptType": 1},
+                callback: function(res) {
+                    if (res.resultCode == 0) {
+                        res = res.data;
+                        res.dataList && $tableList.html(template.render('storeListTemplate', res));
+                    } else {
+                        TIP.show(2, "查询失败");
+                    }
+                }
+            });
+
+            var deleteUrl = REQUEST.url('deleteMerchant');
+            $tableList.on("click", ".opt", function() {
+                var $this = $(this);
+                REQUEST.post(deleteUrl, {"data": {"merchantId": $this.attr("data-id")}}, function(res) {
+                    if (res.resultCode == 0) {
+                        TIP.show(1, "操作成功");
+                        $this.parents("tr").remove();
+                    } else {
+                        TIP.show(2, "操作失败");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

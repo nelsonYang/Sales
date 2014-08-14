@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>微信授权配置 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/myWeixin/firstFollowSet.html">首次关注设置</a></li>
+        <li><a href="#html/myWeixin/menuSet.html">自定义菜单设置</a></li>
+        <li><a href="#html/myWeixin/keywordReplySet.html">关键词回复设置</a></li>
+        <li><a href="#html/myWeixin/weixinTokenSet.html">微信接口配置</a></li>
+        <li><a href="#html/myWeixin/weixinAuthSet.html" class="current">微信授权配置</a></li>
+        <!--<li><a href="javascript:;">便民工具管理</a></li>-->
+    </ul>
+    <div class="form-info">
+        <p>1. <strong>订阅号</strong>通过<strong>微信认证</strong>可使用自定义菜单。</p>
+        <p>2. <strong>服务号</strong>可直接使用自定义菜单，<strong>通过微信认证的服务号</strong>可使用高级接口。</p>
+        <p>3. 在公众平台申请接口使用的<strong>AppId</strong>和<strong>AppSecret</strong>，然后填入下边表单。</p>
+    </div>
+    <div class="form-box">
+        <form method="post" id="serviceAccountForm">
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="appId"><b>*</b>AppId：</label>
+                </div>
+                <div class="input-box fl">
+                    <input type="text" class="normal-input" name="appId" id="appId">
+                </div>        
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="appSecret"><b>*</b>AppSecret：</label>
+                </div>
+                <div class="input-box fl">
+                    <input type="text" class="normal-input" name="appSecret" id="appSecret">
+                </div>        
+            </div>
+            <!-- <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="ConfirmPassword">高级接口：</label>
+                </div>
+                <div class="inner-group fl">
+                    <div class="check-box clearfix">
+                        <input type="checkbox" name="ConfirmPassword" id="ConfirmPassword">
+                        <span class="fl">如果您的公众号是服务号并且已通过微信认证，请勾选此选项</span>
+                    </div>
+                    <div class="check-box clearfix">
+                        <input type="checkbox" name="ConfirmPassword" id="ConfirmPassword">
+                        <span class="fl">需要开启语音关键词回复，请勾选此选项</span>
+                    </div>
+                    <div class="tip-box">
+                        <h3>这个有什么用？</h3>
+                        <p>通过微信认证的服务号可以使用微信的高级接口</p>
+                        <p>请在微信公众平台高级接口处的【<strong>OAuth2.0网页授权​</strong>】设置授权回调页面域名为【<strong>www.ptweixin.com</strong>】</p>
+                        <p><strong>开微信认证选项后，客户端中所有需要用户登录的页面，将直接读取用户的微信资料进行一键登录，免去用户注册的步骤</strong></p>
+                        <p><strong>开启语音关键词回复，您的微信帐号必须已通过微信认证并在高级接口中开启了语音识别，系统将自动识别出语音内容并启用模糊匹配方式进行关键字回复</strong></p>
+                    </div>
+                </div>               
+            </div> -->
+            <div class="button-box ml125 pt20">
+                <input type="submit" class="green-btn sub-btn" id="sub-btn" value="确认提交">
+            </div>
+        </form>   
+    </div>
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'validation', 'tip'], function($, REQUEST, validate, TIP) {
+            var $subBtn = $("#sub-btn");
+
+            // 获取接口名称
+            REQUEST.post(REQUEST.url('inquireServiceAccount'), {}, function(res) {
+                if (res.resultCode == 0) {
+                    var res = res.data;
+                    $("#appId").val(res.appId);
+                    $("#appSecret").val(res.appSecret);
+                } else {
+                    TIP.show(2, "查询信息失败");
+                }
+            });
+
+            $("#serviceAccountForm").validate({
+                ignore: "",
+                submitHandler: function(form) {
+                    $subBtn.addClass('sub-ing').val("提交中...");
+                    REQUEST.form(form, REQUEST.url('bindServiceAccount'), {"encryptType": 1}, function(res) {
+                        $subBtn.removeClass('sub-ing').val("确认提交");
+                        if (res.resultCode == 0) {
+                            TIP.show(1, "操作成功");
+                            // getServiceAccount();
+                            // JUMP.to('html/myWeixin/keywordReplyList.html');
+                            // setTimeout((function(){location.href="login.html"}), 500);
+                        } else {
+                            TIP.show(2, "操作失败");
+                        }
+                    });
+                },
+                rules: {
+                    appId: {required: true},
+                    appSecret: {required: true}
+                },
+                messages: {
+                    appId: {required: "请输入appId"},
+                    appSecret: {required: "请输入appSecret"}
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

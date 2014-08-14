@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>会员管理 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/member/memberList.html" class="current">会员管理</a></li>
+        <li><a href="#html/member/memberLevelList.html">会员等级设置</a></li>
+        <li><a href="#html/member/memberCardBasicSet.html">会员卡基本设置</a></li>
+        <li><a href="#html/member/memberCardList.html">会员卡</a></li>
+        <li><a href="#html/member/memberCardGetList.html">会员卡领取记录</a></li>
+        <!-- <li><a href="#html/member/customerPasswordSet.html">商家密码设置</a></li> -->
+    </ul>
+    <div class="button-box ml10 pt20">
+        <a href="#html/member/memberList.html" class="blue-btn normal-btn">返回会员列表</a>
+        <a href="javascript:;" class="red-btn normal-btn ml20" id="editMemberPassword">修改该会员密码</a>
+    </div>
+    <div class="form-box search-box" style="padding-bottom:0px">
+        <form method="post" id="passwordForm" class="dn">
+            <div class="form-group clearfix">
+                <div class="inner-group fl">
+                    <div class="label-item fl">
+                        <label class="input-item" for="password">修改密码：</label>
+                    </div>
+                    <div class="input-box fl">
+                        <input type="text" class="normal-input" name="password" id="password" maxlength="16">
+                    </div>
+                </div>
+                <div class="button-box fl ml15">
+                    <input type="submit" class="green-btn form-normal-btn" id="sub-btn" value="确认提交">
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- 会员信息表格 -->
+    <div class="table-box">
+        <table>
+            <thead>
+            <th class="w150">手机号</th>
+            <th class="w100">姓名</th>
+            <th class="w100">昵称</th>
+            <th>联系地址</th>
+            <!-- <th class="w100">会员卡号</th> -->
+            <th class="w100">会员生日</th>
+            <th class="w150">联系邮箱</th>
+            <!-- <th class="w100">积分</th> -->
+            <th class="w150">注册时间</th>
+            </thead>
+            <tbody id="table-list">
+            </tbody>
+        </table>
+    </div>
+    <!-- 会员积分领取表格 -->
+    <!-- <div class="table-box pt20">
+        <table>
+            <thead>
+                <th class="w100">序号</th>
+                <th class="w150">类型</th>
+                <th class="w100">积分</th>
+                <th class="w150">帐户剩余积分</th>
+                <th>内容</th>
+                <th class="w150">操作员</th>
+                <th class="w150">时间</th>
+            </thead>
+            <tbody id="table-list">
+                <tr>
+                    <td nowrap="nowrap">1</td>
+                    <td nowrap="nowrap">每日签到</td>
+                    <td nowrap="nowrap">10</td>
+                    <td nowrap="nowrap">70</td>
+                    <td nowrap="nowrap">每日签到领取积分</td>
+                    <td nowrap="nowrap"></td>
+                    <td nowrap="nowrap">2014-02-28 20:44:05</td>
+                </tr>
+            </tbody>
+        </table>
+    </div> -->
+    <script>
+        seajs.use(['jquery', 'request', 'tip', 'search', 'validation'], function($, REQUEST, TIP, SEARCH, validate) {
+            // console.log();
+            var param = SEARCH.get();
+            var memberId = param.memberId;
+            if (!memberId) {
+                return false;
+            }
+            var $passwordForm = $("#passwordForm");
+            var $subBtn = $("#sub-btn");
+            $("#editMemberPassword").on("click", function() {
+                $this = $(this);
+                var text = $this.text() == "修改该会员密码" ? "取消修改密码" : "修改该会员密码";
+                $this.toggleClass('gray-btn').text(text);
+                $passwordForm.toggleClass('mb15').toggle(150);
+                ;
+            });
+
+            // 获取会员详情
+            REQUEST.post(REQUEST.url('inquireMemberById'), {"encryptType": 1, "data": {"memberId": memberId}}, function(res) {
+                if (res.resultCode == 0) {
+                    var res = res.data;
+                    var arr = [];
+                    arr.push('<tr>');
+                    arr.push('<td>' + res.mobile + '</td>');
+                    arr.push('<td>' + res.realName + '</td>');
+                    arr.push('<td>' + res.weixinNo + '</td>');
+                    arr.push('<td>' + res.address + '</td>');
+                    // arr.push('<td>NO.<span><'+res.memberNO+'/span></td>');
+                    arr.push('<td>' + res.birthday + '</td>');
+                    arr.push('<td>' + res.email + '</td>');
+                    arr.push('<td>' + res.createTime + '</td>');
+                    arr.push('</tr>');
+                    $("#table-list").html(arr.join(""));
+                } else {
+                    TIP.show(2, "查询信息失败");
+                }
+            });
+
+            $passwordForm.validate({
+                ignore: "",
+                submitHandler: function(form) {
+                    $subBtn.addClass('sub-ing').val("提交中...");
+                    REQUEST.form(form, REQUEST.url('updateMember'), {"encryptType": 1, "data": {"memberId": memberId}}, function(res) {
+                        $subBtn.removeClass('sub-ing').val("确认提交");
+                        if (res.resultCode == 0) {
+                            TIP.show(1, "操作成功");
+                        } else {
+                            TIP.show(2, "操作失败");
+                        }
+                    });
+                },
+                rules: {
+                    password: {required: true}
+                },
+                messages: {
+                    password: {required: "请输入密码"}
+                }
+            });
+        });
+    </script>
+</body>
+</html>

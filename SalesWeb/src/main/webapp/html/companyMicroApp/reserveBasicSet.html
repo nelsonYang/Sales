@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>基本设置 在线预约管理 - 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/companyMicroApp/reserveBasicSet.html" class="current">基本设置</a></li>
+        <li><a href="#html/companyMicroApp/reserveList.html">在线预约管理</a></li>
+    </ul>
+    <div class="form-box">
+        <form method="post" id="basicSetForm">
+            <h3>触发信息设置</h3>
+            <div class="form-items clearfix">
+                <div class="left-form-item fl">
+                    <div class="form-item">
+                        <div class="label-item">
+                            <label class="input-item" for="keyword"><b>*</b>触发关键词：</label>
+                            <span class="tip-line">(有多个关键词请用空格隔开)</span>
+                        </div>
+                        <div class="input-box clearfix">
+                            <input type="text" class="normal-input" name="keyword" id="keyword">
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <div class="label-item">
+                            <label class="input-item" for="keyword"><b>*</b>匹配模式：</label>
+                        </div>
+                        <div class="inner-item">
+                            <div class="radio-box">
+                                <input type="radio" name="matchType" id="matchType" checked="checked" value="1"><label for="matchType">精确匹配</label><span class="tip-line">(输入的文字和此关键词一样才触发)</span>
+                            </div>
+                            <div class="radio-box">
+                                <input type="radio" name="matchType" id="matchType" value="2"><label for="matchType">模糊匹配</label><span class="tip-line">(输入的文字包含此关键词就触发)</span>
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="form-item">
+                        <div class="label-item">
+                            <label class="input-item" for="messageTitle"><b>*</b>图文消息标题：</label>
+                        </div>
+                        <div class="input-box clearfix">
+                            <input type="text" class="normal-input" name="messageTitle" id="messageTitle">
+                        </div>
+                    </div>
+                </div>
+                <div class="right-form-item fl">
+                    <div class="form-item clearfix">
+                        <div class="label-item">
+                            <label class="input-item" for="messageImageURL"><b>*</b>图文消息封面：</label>
+                            <span class="tip-line">(大图尺寸建议：<strong>640*360px</strong>)</span>
+                        </div>
+                        <div class="button-box">
+                            <button type="button" class="blue-btn normal-btn" id="pic-upload">上传图片</button>
+                        </div>
+                        <div class="clearfix">
+                            <input type="hidden" name="messageImageURL" id="messageImageURL">
+                        </div>
+                        <div class="pic-preview-box pt10" id="upload-box">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="button-box pt20">
+                <input type="submit" class="green-btn sub-btn" id="sub-btn" value="确认提交">
+            </div>
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'validation', 'tip', 'formFill', 'upload'], function($, REQUEST, validate, TIP, FILL, upload) {
+            var $subBtn = $("#sub-btn");
+            var $basicSetForm = $("#basicSetForm");
+            var reservationConfigId;
+            var $uploadBox = $('#upload-box');
+            var $messageImageURL = $("#messageImageURL");
+            $uploadBox.imageUpload({
+                btn_id: 'pic-upload',
+                max_num: 1,
+                change_callback: function(data) {
+                    var imgSrc = data.length ? data[0][0].filePath : "";
+                    $messageImageURL.val(imgSrc);
+                }
+            });
+
+            // 获取首次关注设置详情;
+            REQUEST.post(REQUEST.url('inquireReservationConfigList'), {"encryptType": 0, "data": {"responseContentType": 4}}, function(res) {
+                if (res.resultCode == 0) {
+                    var res = res.data;
+                    reservationConfigId = res.reservationConfigId;
+                    var messageImageURL = res.messageImageURL;
+                    if (messageImageURL) {
+                        var imageArr = [[{"filePath": messageImageURL, "type": 1}]];
+                        $uploadBox.imageUpload('renderData', imageArr);
+                    }
+                    FILL.fill($basicSetForm, res);
+                } else {
+                    TIP.show(2, "查询信息失败");
+                }
+            });
+            $basicSetForm.validate({
+                ignore: "",
+                submitHandler: function(form) {
+                    $subBtn.addClass('sub-ing').val("提交中...");
+                    var param = {"encryptType": 1, "data": {"responseContentType": 4}};
+                    reservationConfigId && (param.data.reservationConfigId = reservationConfigId);
+                    REQUEST.form(form, REQUEST.url('insertReservationConfig'), param, function(res) {
+                        $subBtn.removeClass('sub-ing').val("确认提交");
+                        if (res.resultCode == 0) {
+                            TIP.show(1, "操作成功");
+                        } else {
+                            TIP.show(2, "操作失败");
+                        }
+                    });
+                },
+                rules: {
+                    keyword: {required: true},
+                    matchType: {required: true},
+                    messageTitle: {required: true},
+                    messageImageURL: {required: true}
+                },
+                messages: {
+                    keyword: {required: "请输入关键字"},
+                    matchType: {required: "请选择匹配类型"},
+                    messageTitle: {required: "请输入图文标题"},
+                    messageImageURL: {required: "情上传预约图片"}
+                }
+            });
+        });
+    </script>
+</body>
+</html>

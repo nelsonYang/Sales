@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta charset="utf-8">
+        <meta name="description" content="微COOL工作室"/>
+        <meta name="keywords" content="微COOL工作室"/>
+        <title>欢迎登录 - 微COOL工作室 微信营销平台</title>
+        <link rel="stylesheet" href="css/new-basic.css">
+        <link rel="stylesheet" href="css/login.css">
+    </head>
+    <body style="background-image: url('images/login_bg.jpg')">
+        <div class="register-box clearfix">
+            <div class="form-box">
+                <form method="post" id="loginForm">
+                    <div class="form-group clearfix">
+                        <div class="label-item fl">
+                            <label class="input-item" for="companyName"><b>*</b>公司名称：</label>
+                        </div>
+                        <div class="input-box fl"><input type="text" class="normal-input" name="companyName" id="userName"></div>
+                    </div>
+                    <div class="form-group clearfix">
+                        <div class="label-item fl">
+                            <label class="input-item" for="password"><b>*</b>密码：</label>
+                        </div>
+                        <div class="input-box fl"><input type="password" class="normal-input" name="password" id="password"></div>
+                    </div>
+
+                    <div class="form-group clearfix">
+                        <div class="label-item fl">
+                            <label class="input-item" for="linkMobile"><b>*</b>电话：</label>
+                        </div>
+                        <div class="input-box fl">
+                            <input type="text" class="normal-input" name="linkMobile" id="linkMobile">
+                        </div>
+                    </div>
+                    <div class="form-group clearfix">
+                        <div class="label-item fl">
+                            <label class="input-item" for="email"><b>*</b>邮箱：</label>
+                        </div>
+                        <div class="input-box fl">
+                            <input type="text" class="normal-input" name="email" id="email">
+                        </div>
+                    </div>
+                    <div class="form-group clearfix">
+                        <div class="label-item fl">
+                            <label class="input-item" for="qqNo">QQ：</label>
+                        </div>
+                        <div class="input-box fl">
+                            <input type="text" class="normal-input" name="qqNo" id="qqNo">
+                        </div>
+                    </div>
+                    <div class="form-group clearfix">
+                        <div class="label-item fl">
+                            <label class="input-item smaller" for="province"><b>*</b>省份：</label>
+                        </div>
+                        <div class="input-box fl">
+                            <input type="text" class="smaller-input" name="province" id="province">
+                        </div>
+                        <div class="label-item fl">
+                            <label class="input-item smaller" for="city"><b>*</b>市区：</label>
+                        </div>
+                        <div class="input-box fl">
+                            <input type="text" class="smaller-input" name="city" id="city">
+                        </div>
+                        <div class="label-item fl">
+                            <label class="input-item smaller" for="region"><b>*</b>地区：</label>
+                        </div>
+                        <div class="input-box fl">
+                            <input type="text" class="smaller-input" name="region" id="region">
+                        </div>
+                        <div class="label-item fl">
+                            <label class="input-item smaller" for="street"><b>*</b>街道：</label>
+                        </div>
+                        <div class="input-box fl">
+                            <input type="text" class="smaller-input" name="street" id="street">
+                        </div>
+                    </div>
+                    <div class="button-box ml125 pt20">
+                        <input type="submit" class="green-btn sub-btn" id="sub-btn" value="注 册">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script src="js/sea.js" id="seajsnode"></script>
+        <script src="js/seajs-config.js"></script>
+        <script>
+            seajs.use('modules/register.js');
+        </script>
+    </body>
+</html>

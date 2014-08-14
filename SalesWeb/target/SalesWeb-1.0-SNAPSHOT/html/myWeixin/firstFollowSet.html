@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>首次关注设置 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/myWeixin/firstFollowSet.html" class="current">首次关注设置</a></li>
+        <li><a href="#html/myWeixin/menuSet.html">自定义菜单设置</a></li>
+        <li><a href="#html/myWeixin/keywordReplySet.html">关键词回复设置</a></li>
+        <li><a href="#html/myWeixin/weixinTokenSet.html">微信接口配置</a></li>
+        <li><a href="#html/myWeixin/weixinAuthSet.html">微信授权配置</a></li>
+        <!-- <li><a href="#html/myWeixin/spreadSetList.html">推广渠道管理</a></li> -->
+        <!--<li><a href="#html/myWeixin/" class="last">便民工具管理</a></li>-->   
+    </ul>
+    <div class="form-box">
+        <form method="post" id="firstFollowForm">
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="responseContentType"><b>*</b>回复类型：</label>
+                </div>
+                <div class="select-box fl">
+                    <select name="responseContentType" id="responseContentType">
+                        <option value="1">文字消息</option>
+                        <option value="2">图文消息</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="relatedId"><b>*</b>回复内容：</label>
+                </div>
+                <div class="textarea-box fl" id="content-box">
+                    <textarea name="responseContent" class="normal-textarea" id="responseContent" cols="30" rows="5"></textarea>
+                </div>
+                <div class="select-box fl dn" id="select-box" >
+                    <div id="menu"></div>
+                    <div class="text-box fl">
+                        <a href="#html/source/imageTextList.html">素材管理</a>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="ConfirmPassword"><b>*</b>任意关键字：</label>
+                </div>
+                <div class="check-box fl">
+                    <input type="checkbox" name="ConfirmPassword" id="ConfirmPassword">
+                    <span class="fl">开启</span>
+                    <span class="tip-line fl">&nbsp;(开启后，当输入的关键字无相关的匹配内容时，则使用本设置回复)</span>
+                </div>
+            </div> -->
+            <div class="button-box ml125 pt20">
+                <input type="submit" class="green-btn sub-btn" id="sub-btn" value="确认提交">
+            </div>
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'validation', 'tip', 'formFill', 'modules/menuList.js'], function($, REQUEST, validate, TIP, FILL, MENU) {
+            var $firstFollowForm = $("#firstFollowForm");
+            var $subBtn = $("#sub-btn");
+            var $contentBox = $("#content-box");
+            var $selectBox = $("#select-box");
+            var responseMessageCfgId;
+            var $menu = $('#menu');
+            MENU.showMenu($menu);
+
+            //$selectBox.hide();
+            /* var $responseContent = $("#responseContent");
+             var $relatedId = $("#relatedId");
+             function addRules() {
+             $responseContent.rules("add", {
+             required: true,
+             messages: {required: "请输入回复内容", }
+             });
+             $relatedId.rules("remove");
+             }
+             function removeRules() {
+             $relatedId.rules("add", {
+             min: 1,
+             messages: {min: "请选择关联内容", }
+             });
+             $responseContent.rules("remove");
+             }*/
+            // 获取首次关注设置详情;
+            REQUEST.post(REQUEST.url('inquireFirstCarCfg'), {"encryptType": 1, "data": {"type": 10}}, function(res) {
+                if (res.resultCode == 0) {
+                    var res = res.data;
+                    responseMessageCfgId = res.responseMessageCfgId;
+                    if (res.responseContentType == 2) {
+                        $selectBox.show();
+                        $contentBox.hide();
+                    } else {
+                        $contentBox.show();
+                        $selectBox.hide();
+                    }
+                    FILL.fill($firstFollowForm, res);
+                } else {
+                    TIP.show(2, "查询信息失败");
+                }
+            });
+
+            $firstFollowForm.validate({
+                ignore: "",
+                submitHandler: function(form) {
+                    $subBtn.addClass('sub-ing').val("提交中...");
+                    var param = {"encryptType": 1, "data": {"type": 10}};
+                    responseMessageCfgId && (param.data.responseMessageCfgId = responseMessageCfgId);
+                    REQUEST.form(form, REQUEST.url('insertResponseMessageCfg'), param, function(res) {
+                        $subBtn.removeClass('sub-ing').val("确认提交");
+                        if (res.resultCode == 0) {
+                            TIP.show(1, "操作成功");
+                        } else {
+                            TIP.show(2, "操作失败");
+                        }
+                    });
+                },
+                rules: {
+                    responseContentType: {required: true},
+                },
+                messages: {
+                    responseContentType: {required: "请选择回复类型"}
+
+                }
+            });
+
+            $("#responseContentType").on("change", function() {
+                if (this.value == 1) {
+                    // addRules();
+                    $contentBox.show();
+                    $selectBox.hide().children().children().eq(0).attr("selected", "selected");
+                } else {
+
+                    $selectBox.show();
+                    $contentBox.hide().children('textarea').val("");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

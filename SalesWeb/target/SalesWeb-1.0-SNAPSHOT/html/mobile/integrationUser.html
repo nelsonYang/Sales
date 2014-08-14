@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../../js/mobile/jquery.mobile-1.3.2.min.css">
+        <script src="../../js/mobile/jquery-1.8.3.min.js"></script>
+        <script src="../../js/mobile/jquery.mobile-1.3.2.min.js"></script>
+        <script src="../../js/sea.js" id="seajsnode"></script>
+        <script src="../../js/seajs-config.js"></script>
+        <style type="text/css">
+            .list-img{
+                top:16px;
+                left:15px;
+            }
+        </style>
+    </head>
+    <body>
+        <div data-role="page" id="couponDetail">
+            <div data-role="header" >
+                <h1>我的积分</h1>
+            </div>
+            <div data-role="content" id="couponDiv" style="padding-top: 10px;">
+                <div style="float: left;width: 40%;text-align: center;font-size: 18px;font-weight: bold;">
+                    <span id="integeration">0</span> 	
+                    </br>
+                    <span>我的积分</span>
+                </div>
+                <div  style="float: left;width:20%;">
+                    <img alt="" src="../../images/click.png" style="width: 100%;height: 100%;">
+                </div>
+                <div  style="float: left;width: 40%;text-align: center;font-size: 18px;font-weight: bold;">
+                    <span id="integeration1">0</span> 	
+                    </br>
+                    <span>签到次数</span>
+
+                </div>
+                <div style="clear: both"></div>
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="integration.html" data-icon="arrow-r">获得积分</a></li>
+                        <li><a href="#couponList" data-icon="arrow-r"  data-theme="b">使用积分</a></li>
+                    </ul>
+                </div>   
+                <ul data-role="listview" data-inset="true">
+                    <li>
+                        <a href=""  data-icon="arrow-r">
+                            <img src="../../images/microbar.png" class="list-img">
+                            <h2>我兑换的礼品</h2>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="integration.html" data-icon="arrow-r">
+                            <img src="../../images/microbar.png"  class="list-img">
+                            <h2>积分兑换</h2>
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+
+            <div data-role="footer"  data-position="fixed" data-tap-toggle="false">
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="memberCardDetail.html" data-icon="home" data-theme="a">会员卡</a></li>
+                        <li><a href="integration.html" data-icon="home" data-theme="a">积分</a></li>
+                        <li><a href="coupon.html" data-icon="home" data-theme="a">优惠券</a></li>
+                        <li><a href="modifymemberinfo.html" data-icon="home" data-theme="a" >我的资料</a></li>
+                    </ul>
+                </div>   
+            </div>  
+        </div>
+        <script id="integrationListTemplate" type="text/html">
+            //"integrationFlowId", "memberId", "companyId", "createTime", "integrationAmount", "type"
+            <% var integration, integrationId; %>
+            <% for ( i = 0, len = dataList.length; i < len; i++ ) { integration = dataList[i]; integrationId = integration.integrationId; %>
+            <tr>
+            <td><%=integrationId%></td>
+            <td><%=integration.type%></td>
+            <td><%=integration.integrationAmount%></td>
+            <td><%=integration.createTime%></td>
+            </tr>
+            <% }%>
+        </script>
+        <script type="text/javascript">
+            seajs.use(['jquery', 'request', 'template', 'pager', 'tip', 'search', 'storage', 'static'], function($, REQUEST, TEMPLATE, PAGER, TIP, SEARCH, STORAGE, STATIC) {
+                var param = SEARCH.getParam(location.search);
+                var token = param.token;
+                if (!token) {
+                    token = STORAGE.get(STATIC.COMPANY_TOKEN);
+                    if (token) {
+                        STORAGE.set(STATIC.COMPANY_TOKEN, token);
+                    }
+                }
+                // var token = "c2FsZXMtMQ==";
+                var memberId = param.memberId;
+                if (!memberId) {
+                    memberId = STORAGE.get(STATIC.WEIXIN_MEMBER_ID);
+                }
+                var $subBtn = $("#sub-btn");
+                var $tableList = $("#table-list");
+                var queryUrl = REQUEST.url("inquireIntegrationFlowListByToken");
+
+                var $pageBox = $('#page-box');
+                $pageBox.pager({
+                    form: "",
+                    url: queryUrl,
+                    param: {"data": {"pageNo": 1, "pageCount": 10, "token": token, "memberId": memberId}, "encryptType": 2},
+                    callback: function(res) {
+                        if (res.resultCode == 0) {
+                            res = res.data;
+                            res.dataList && $tableList.html(template.render('integrationListTemplate', res));
+                        } else {
+                            TIP.show(2, "查询失败");
+                        }
+                    }
+                });
+                $subBtn.on('click', function() {
+                    if (memberId) {
+                        REQUEST.post(REQUEST.url('memberSign'), {"encryptType": 2, "data": {"token": token, "memberId": memberId}}, function(res) {
+                            if (res.resultCode == 0) {
+                                TIP.show(2, '恭喜你，领取成功');
+                                REQUEST.post(REQUEST.url("inquireMemberByIdAndToken"), {"encryptType": 2, "data": {"token": token, "memberId": memberId}}, function(res) {
+                                    if (res.resultCode == 0) {
+                                        res = res.data;
+                                        $('#integeration').text(res.integration);
+                                    }
+                                });
+
+                            } else {
+                                TIP.show(2, "查询信息失败");
+                            }
+                        });
+                    } else {
+                        window.location.href = "member.html";
+                    }
+                });
+                REQUEST.post(REQUEST.url("inquireMemberByIdAndToken"), {"encryptType": 2, "data": {"token": token, "memberId": memberId}}, function(res) {
+                    if (res.resultCode == 0) {
+                        res = res.data;
+                        $('#integeration').text(res.integration);
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

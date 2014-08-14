@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../../js/mobile/jquery.mobile-1.3.2.min.css">
+        <script src="../../js/mobile/jquery-1.8.3.min.js"></script>
+        <script src="../../js/mobile/jquery.mobile-1.3.2.min.js"></script>
+        <script src="../../js/sea.js" id="seajsnode"></script>
+        <script src="../../js/seajs-config.js"></script>
+    </head>
+    <body>
+        <div data-role="page">
+            <div data-role="header">
+                <h1>商家</h1>
+            </div>
+            <!-- merchantName", "lag", "lat",  "backgroupImageURL",, "telphone", "address"-->
+            <div data-role="content">
+                <div id="merchantDiv">
+                    <div>
+                        <img id="backgroupImageURL" src="../../images/weishangjia.jpg"/>
+                    </div>
+                    <div>
+                        <label>商家名称：</label>
+                        <label id="address"></label>
+                    </div>
+                    <div role="main" class="ui-content" id="map-canvas">
+                        <!-- map loads here... -->
+                    </div>
+                    <div>
+                        <label>地址：</label>
+                        <label id="address"></label>
+                    </div>
+                    <div>
+                        <label>电话：</label>
+                        <label id="telphone"></label>
+                    </div>
+                </div>
+            </div>
+            <div data-role="footer">
+                   <h4>版权所有微cool工作室</h4>
+            </div>
+        </div>
+        <script type="text/javascript">
+            seajs.use(['jquery', 'request', 'validation', 'tip', 'modules/jsonFill.js', 'upload', 'search', 'storage', 'static'], function($, REQUEST, validate, TIP, FILL, upload, SEARCH, STORAGE, STATIC) {
+                var $merchantDiv = $("#merchantDiv");
+                var $messageURL = $("#backgroupImageURL");
+                var param = SEARCH.getParam(location.search);
+                var token = param.token;
+                if (!token) {
+                    token = STORAGE.get(STATIC.COMPANY_TOKEN);
+                    if (token) {
+                        STORAGE.set(STATIC.COMPANY_TOKEN, token);
+                    }
+                }
+                var merchantId = param.merchantId;
+                if (merchantId) {
+                    // 获取优惠券设置详情;
+                    REQUEST.post(REQUEST.url('inquireMerchantByToken'), {"encryptType": 2, "data": {"merchantId": merchantId, "token": token}}, function(res) {
+                        if (res.resultCode == 0) {
+                            var res = res.data;
+                            var messageImageURL = res.backgroupImageURL;
+                            if (messageImageURL) {
+                                $messageURL.attr('src', messageImageURL);
+                            }
+                            FILL.fill($merchantDiv, res);
+                        } else {
+                            TIP.show(2, "查询信息失败");
+                        }
+                    });
+
+                } else {
+                    alert("不存在商家");
+                }
+            });
+        </script>
+
+    </body>
+</html>

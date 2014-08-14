@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>水果达人管理 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <body>
+        <ul class="form-tab clearfix">
+            <li><a href="#html/activity/turntableBasicSet.html">欢乐大转盘基本设置</a></li>
+            <li><a href="#html/activity/turntableList.html" class="current">欢乐大转盘管理</a></li>
+        </ul>
+        <div class="form-box">
+            <form method="post" id="eventInfoForm">
+                <div class="form-group clearfix">
+                    <div class="label-item fl">
+                        <label class="input-item" for="keyword"><b>*</b>触发关键词：</label>
+                    </div>
+                    <div class="inner-group fl">
+                        <div class="input-box clearfix"><input type="text" class="normal-input" name="keyword" id="keyword"></div>
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <div class="label-item fl">
+                        <label class="input-item" for="eventName"><b>*</b>活动名称：</label>
+                    </div>
+                    <div class="input-box fl"><input type="text" class="normal-input" name="eventName" id="eventName"></div>
+                </div>
+                <div class="form-group clearfix">
+                    <div class="label-item fl">
+                        <label class="input-item" for="eventEffectiveStartTime"><b>*</b>活动开始时间：</label>
+                    </div>
+                    <div class="input-box fl"><input type="text" class="normal-input" name="eventEffectiveStartTime" id="eventEffectiveStartTime"></div>
+                </div>
+                <div class="form-group clearfix">
+                    <div class="label-item fl">
+                        <label class="input-item" for="eventEffectiveEndTime"><b>*</b>活动结束时间：</label>
+                    </div>
+                    <div class="input-box fl"><input type="text" class="normal-input" name="eventEffectiveEndTime" id="eventEffectiveEndTime"></div>
+                </div>
+                <div class="form-group clearfix">
+                    <div class="label-item fl"><label class="input-item" for="eventDesc"><b>*</b>活动简介：</label></div>
+                    <div class="inner-group fl">
+                        <div class="textarea-box clearfix">
+                            <textarea name="eventDesc" class="big-textarea" id="eventDesc" cols="30" rows="4"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <div class="label-item fl"><label class="input-item" for="eventEndImageURL">活动结束图片：</label></div>
+                    <div class="inner-group fl">
+                        <div class="button-box">
+                            <button type="button" class="blue-btn normal-btn" id="pic-upload">上传图片</button>
+                        </div>
+                        <div class="tip-box">大图尺寸建议：<strong>640*360px</strong></div>
+                        <div class="clearfix">
+                            <input type="hidden" name="eventEndImageURL" id="eventEndImageURL">
+                        </div>
+                        <div class="pic-preview-box pt10" id="upload-box">
+                        </div>
+                    </div>
+                </div>
+                <div class="button-box ml125 pt20">
+                    <input type="submit" class="green-btn sub-btn" id="sub-btn" value="确认提交">
+                </div>
+            </form>
+        </div>
+        <script type="text/javascript">
+            seajs.use(['jquery', 'request', 'validation', 'tip', 'jump', 'search', 'formFill', 'datePicker', 'upload'], function($, REQUEST, validate, TIP, JUMP, SEARCH, FILL, datePicker, upload) {
+                var $subBtn = $("#sub-btn");
+                var $eventInfoForm = $("#eventInfoForm");
+                var param = SEARCH.get();
+                var eventId = param.eventId;
+                var queryUrl;
+                var $uploadBox = $('#upload-box');
+                var $eventEndImageURL = $("#eventEndImageURL");
+                $uploadBox.imageUpload({
+                    btn_id: 'pic-upload',
+                    max_num: 1,
+                    change_callback: function(data) {
+                        var imgSrc = data.length ? data[0][0].filePath : "";
+                        $eventEndImageURL.val(imgSrc);
+                    }
+                });
+                // 获取活动详情;
+                if (eventId) {
+                    queryUrl = REQUEST.url('updateEvent');
+                    REQUEST.post(REQUEST.url('inquireEventById'), {"encryptType": 1, "data": {"eventId": eventId}}, function(res) {
+                        if (res.resultCode == 0) {
+                            var res = res.data;
+                            var eventEndImageURL = res.eventEndImageURL;
+                            if (eventEndImageURL) {
+                                var imageArr = [[{"filePath": eventEndImageURL, "type": 1}]];
+                                $uploadBox.imageUpload('renderData', imageArr);
+                            }
+                            FILL.fill($eventInfoForm, res);
+                        } else {
+                            TIP.show(2, "查询信息失败");
+                        }
+                    });
+                } else {
+                    queryUrl = REQUEST.url('insertEvent');
+                }
+                $("#eventEffectiveStartTime").on('click', function() {
+                    WdatePicker({readOnly: true, skin: "twoer", dateFmt: 'yyyy-MM-dd HH:mm:ss', firstDayOfWeek: 1, maxDate: '#F{$dp.$D(\'eventEffectiveEndTime\')}'});
+                });
+                $("#eventEffectiveEndTime").on('click', function() {
+                    WdatePicker({readOnly: true, skin: "twoer", dateFmt: 'yyyy-MM-dd HH:mm:ss', firstDayOfWeek: 1, minDate: '#F{$dp.$D(\'eventEffectiveStartTime\',{d:1})}'});
+                });
+
+                $eventInfoForm.validate({
+                    ignore: "",
+                    submitHandler: function(form) {
+                        $subBtn.addClass('sub-ing').val("提交中...");
+                        var param = {"encryptType": 1, "data": {"eventConfigId": -1, "type": 3}};
+                        eventId && (param.data.eventId = eventId);
+                        REQUEST.form(form, queryUrl, param, function(res) {
+                            if (res.resultCode == 0) {
+                                TIP.show(1, "操作成功");
+                                if (eventId) {
+                                    setTimeout((function() {
+                                        JUMP.to('html/activity/turntableList.html');
+                                    }), 1000);
+                                } else {
+                                    setTimeout((function() {
+                                        JUMP.to('html/activity/eventAwardSet.html?jumpUrl=turntableList&eventId=' + res.data.eventId);
+                                    }), 1000);
+                                }
+                            } else {
+                                TIP.show(2, "操作失败");
+                                $subBtn.removeClass('sub-ing').val("确认提交");
+                            }
+                        });
+                    },
+                    rules: {
+                        keyword: {required: true},
+                        eventName: {required: true},
+                        eventDesc: {required: true},
+                        eventEffectiveStartTime: {required: true},
+                        eventEffectiveEndTime: {required: true}
+                    },
+                    messages: {
+                        keyword: {required: "请输入关键词"},
+                        eventName: {required: "请输入活动名称"},
+                        eventDesc: {required: "请输入活动简介"},
+                        eventEffectiveStartTime: {required: "请选择开始时间"},
+                        eventEffectiveEndTime: {required: "请选择结束时间"}
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

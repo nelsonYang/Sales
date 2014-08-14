@@ -1,0 +1,341 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>在线预约管理 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/companyMicroApp/reserveBasicSet.html">基本设置</a></li>
+        <li><a href="#html/companyMicroApp/reserveList.html" class="current">在线预约管理</a></li>
+    </ul>
+    <div class="form-box">
+        <form method="post" id="reserveForm">
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="keyword"><b>*</b>触发关键词：</label>
+                </div>
+                <div class="inner-group fl">
+                    <div class="input-box clearfix"><input type="text" class="normal-input" name="keyword" id="keyword"></div>
+                    <div class="tip-box">如果有多个关键词请用<strong>空格隔开</strong>每个关键词</div>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="messageTitle"><b>*</b>图文消息标题：</label>
+                </div>
+                <div class="input-box fl"><input type="text" class="normal-input" name="messageTitle" id="messageTitle"></div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl"><label class="input-item" for="messageImageURL"><b>*</b>图文消息封面：</label></div>
+                <div class="inner-group fl">
+                    <div class="button-box">
+                        <button type="button" class="blue-btn normal-btn" id="pic-upload">上传图片</button>
+                    </div>
+                    <div class="tip-box">大图尺寸建议：<strong>640*360px</strong></div>
+                    <div class="clearfix">
+                        <input type="hidden" name="messageImageURL" id="messageImageURL">
+                    </div>
+                    <div class="pic-preview-box pt10" id="upload-box">
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="form-group clearfix">
+                <div class="label-item fl"><label class="input-item" for="">简短介绍：</label></div>
+                <div class="inner-group fl">
+                    <div class="textarea-box clearfix">
+                        <textarea name="" class="big-textarea" id="" cols="30" rows="4"></textarea>
+                    </div>
+                    <div class="tip-box">
+                        显示在图文封面下方
+                    </div>
+                </div>
+            </div> -->
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="reservationAddress"><b>*</b>预约地址：</label>
+                </div>
+                <div class="inner-group fl">
+                    <div class="inner-group clearfix">
+                        <div class="input-box fl">
+                            <input type="text" name="reservationAddress" class="big-input" id="reservationAddress" placeholder="预约地址">
+                        </div>
+                        <!-- <div class="button-box fl">
+                            <button class="blue-btn form-small-btn ml10">定位</button>
+                        </div> -->
+                    </div>
+                    <div class="tip-box">
+                        请输入详细地址，便于用户了解
+                    </div>
+                    <!-- <div class="tip-box">
+                        接待预约用户地址，如果输入地址后点击定位按钮无法定位，请在地图上直接点击选择地点
+                    </div>
+                    <div class="inner-group">
+                    </div> -->
+                </div>
+            </div>
+            <!-- <div class="form-group clearfix">
+                <div class="label-item fl"><label class="input-item" for="">头部图片：</label></div>
+                <div class="inner-group fl">
+                    <div class="button-box">
+                        <button class="blue-btn form-normal-btn">上传图片</button>
+                    </div>
+                    <div class="tip-box">图片宽度建议：<strong>640px</strong></div>
+                    <div class="pic-preview-box pt10">
+                        <a href=""><img src="../../images/preview-pic.png" alt="图片预览"></a>
+                    </div>
+                </div>
+            </div> -->
+            <div class="form-group clearfix">
+                <div class="label-item fl"><label class="input-item" for="reservationTelephone"><b>*</b>预约电话：</label></div>
+                <div class="inner-group fl">
+                    <div class="textarea-box clearfix">
+                        <textarea name="reservationTelephone" class="big-textarea" id="reservationTelephone" cols="30" rows="5"></textarea>
+                    </div>
+                    <div class="tip-box">每行填写一个</div>
+                </div>
+            </div>
+            <!-- <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="OldPassword">重命名电话：</label>
+                </div>
+                <div class="inner-group fl">
+                    <div class="input-box clearfix"><input type="text" class="normal-input" name="" id=""></div>
+                    <div class="tip-box">修改用户手机中【预约电话】栏目的名称，您可以将其修改成诸如【下单电话】、【试驾电话】等</div>
+                </div>
+            </div> -->
+            <div class="form-group clearfix">
+                <div class="label-item fl"><label class="input-item" for="reservationDesc"><b>*</b>预约说明：</label></div>
+                <div class="textarea-box fl">
+                    <textarea name="reservationDesc" class="big-textarea" id="reservationDesc" cols="30" rows="4"></textarea>
+                </div>
+            </div>
+            <!-- <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="OldPassword">重命名电话：</label>
+                </div>
+                <div class="inner-group fl">
+                    <div class="input-box clearfix"><input type="text" class="normal-input" name="" id=""></div>
+                    <div class="tip-box">修改用户手机中【预约说明】栏目的名称，您可以将其修改成诸如【下单说明】、【试驾说明】等</div>
+                </div>
+            </div> -->
+            <!-- <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="OldPassword">预约内容设置：</label>
+                </div>
+                <div class="inner-group fl">
+                    <div class="text-box" style="color:#888;margin-left:0;">填写你要收集的内容，预约默认选项不可以修改删除！</div>
+                    <div class="form-table-box">
+                        <table id="reserve-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:120px;">字段类型</th>
+                                    <th>字段名称</th>
+                                    <th>初始内容</th>
+                                    <th style="width:120px;">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>文本框：</td>
+                                    <td>
+                                        <div class="input-box clearfix">
+                                            <input type="text" name="" id="" class="small-input">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-box clearfix">
+                                            <input type="text" name="" id="" class="small-input">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="check-box clearfix">
+                                            <input type="checkbox" name="" id=""><span class="fl">是否显示</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>日期选择：</td>
+                                    <td>
+                                        <div class="input-box clearfix">
+                                            <input type="text" name="" id="" class="small-input">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-box clearfix">
+                                            <input type="text" name="" id="" class="small-input">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="check-box clearfix">
+                                            <input type="checkbox" name="" id=""><span class="fl">是否显示</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="text-tr">
+                                    <td>新增文本框1：</td>
+                                    <td>
+                                        <div class="input-box clearfix">
+                                            <input type="text" name="" id="" class="small-input">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-box clearfix">
+                                            <input type="text" name="" id="" class="small-input">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <i class="add-icon" data-type="text"></i>
+                                    </td>
+                                </tr>
+                                <tr class="text-tr">
+                                    <td>新增文本框2：</td>
+                                    <td>
+                                        <div class="input-box clearfix">
+                                            <input type="text" name="" id="" class="small-input">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-box clearfix">
+                                            <input type="text" name="" id="" class="small-input">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <i class="del-icon" data-type="text"></i>
+                                    </td>
+                                </tr>
+                                <tr class="select-tr">
+                                    <td>新增下拉框1：</td>
+                                    <td>
+                                        <div class="input-box clearfix">
+                                            <input type="text" name="" id="" class="small-input">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-box clearfix">
+                                            <input type="text" name="" id="" class="small-input" placeholder="每个选项之间以“|”分割">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <i class="add-icon" data-type="select"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="OldPassword">短信通知：</label>
+                </div>
+                <div class="inner-group fl">
+                    <div class="inner-group clearfix">
+                        <div class="input-box fl"><input type="text" class="normal-input" name="" id=""></div>
+                        <div class="check-box fl ml10">
+                            <label for=""><input type="checkbox" name="" id=""><span class="fl">启用</span></label>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-box"><strong>当有新订单时，发送短信通知到此手机</strong></div>
+                </div>
+            </div> -->
+            <div class="button-box ml125 pt20">
+                <input type="submit" class="green-btn sub-btn" id="sub-btn" value="确认提交">
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript">
+        /*var $reserveTable = $("#reserve-table");
+         $reserveTable.on("click", ".add-icon", function(){
+         var $this = $(this);
+         var type = $this.attr("data-type");
+         
+         var arr = [];
+         arr.push('<tr>');
+         arr.push('<td>新增文本框1：</td>');
+         arr.push('<td><div class="input-box clearfix"><input type="text" name="" id="" class="small-input"></div></td>');
+         arr.push('<td><div class="input-box clearfix"><input type="text" name="" id="" class="small-input"></div></td>');
+         arr.push('<td><i class="del-icon"></i></td>');
+         arr.push('</tr>');
+         }).on("click", ".del-icon", function(){
+         $(this).parent().parent().remove();
+         });*/
+        seajs.use(['jquery', 'request', 'validation', 'tip', 'jump', 'search', 'formFill', 'upload'], function($, REQUEST, validate, TIP, JUMP, SEARCH, FILL, upload) {
+            var $subBtn = $("#sub-btn");
+            var $reserveForm = $("#reserveForm");
+            var param = SEARCH.get();
+            var reservationId = param.reservationId;
+            var queryUrl;
+            var $uploadBox = $('#upload-box');
+            var $messageImageURL = $("#messageImageURL");
+            $uploadBox.imageUpload({
+                btn_id: 'pic-upload',
+                max_num: 1,
+                change_callback: function(data) {
+                    var imgSrc = data.length ? data[0][0].filePath : "";
+                    $messageImageURL.val(imgSrc);
+                }
+            });
+
+            // 获取预约详情;
+            if (reservationId) {
+                queryUrl = REQUEST.url('updateReservation');
+                REQUEST.post(REQUEST.url('inquireReservationById'), {"encryptType": 1, "data": {"reservationId": reservationId}}, function(res) {
+                    if (res.resultCode == 0) {
+                        var res = res.data;
+                        console.log(res);
+                        var messageImageURL = res.messageImageURL;
+                        if (messageImageURL) {
+                            var imageArr = [[{"filePath": messageImageURL, "type": 1}]];
+                            $uploadBox.imageUpload('renderData', imageArr);
+                        }
+                        FILL.fill($reserveForm, res);
+                    } else {
+                        TIP.show(2, "查询信息失败");
+                    }
+                });
+            } else {
+                queryUrl = REQUEST.url('insertReservation');
+            }
+            $reserveForm.validate({
+                ignore: "",
+                submitHandler: function(form) {
+                    $subBtn.addClass('sub-ing').val("提交中...");
+                    var param = {"encryptType": 1, "data": {"matchType": 1}};
+                    reservationId && (param.data.reservationId = reservationId);
+                    REQUEST.form(form, queryUrl, param, function(res) {
+                        if (res.resultCode == 0) {
+                            TIP.show(1, "操作成功");
+                            setTimeout((function() {
+                                JUMP.to('html/companyMicroApp/reserveList.html');
+                            }), 1000);
+                        } else {
+                            TIP.show(2, "操作失败");
+                            $subBtn.removeClass('sub-ing').val("确认提交");
+                        }
+                    });
+                },
+                rules: {
+                    keyword: {required: true},
+                    messageTitle: {required: true},
+                    messageImageURL: {required: true},
+                    reservationAddress: {required: true},
+                    reservationTelephone: {required: true},
+                    reservationDesc: {required: true}
+                },
+                messages: {
+                    keyword: {required: "请输入关键字"},
+                    messageTitle: {required: "请输入消息标题"},
+                    messageImageURL: {required: "请上传预约图片"},
+                    reservationAddress: {required: "请输入预约地址"},
+                    reservationTelephone: {required: "请输入预约电话"},
+                    reservationDesc: {required: "请输入预约说明"}
+                }
+            });
+        });
+    </script>
+</body>
+</html>

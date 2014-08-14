@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>领取优惠券的会员 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/coupon/couponSet.html">基本设置</a></li>
+        <li><a href="#html/coupon/couponInfoList.html">优惠券列表</a></li>
+        <li><a href="#html/coupon/couponGetMemberList.html" class="current">领取优惠券的会员</a></li>
+        <li><a href="#html/coupon/couponUseList.html">优惠券使用记录</a></li>
+    </ul>
+    <!-- 表格 -->
+    <div class="table-box pt20">
+        <table>
+            <thead>
+            <th class="w150">ID</th>
+            <th class="w150">优惠券名称</th>
+            <th class="w150">会员名称</th>
+            <th class="w150">会员手机号码</th>
+            <!-- <th class="w150">剩余使用次数</th> -->
+            <th>领取时间</th>
+            </thead>
+            <tbody id="table-list">
+            </tbody>
+        </table>
+    </div>
+    <!-- 分页 -->
+    <div class="page-box" id="page-box"></div>
+    <!-- 模板 -->
+    <script id="couponMemberListTemplate" type="text/html">
+        <% var couponMember; %>
+        <% for ( i = 0, len = dataList.length; i < len; i++ ) { couponMember = dataList[i]; %>
+        <tr>
+        <td><%=couponMember.couponMemberId%></td>
+        <td><%=couponMember.couponName%></td>
+        <td><strong><%=couponMember.realName%></strong></td>
+        <td><span><%=couponMember.mobile%></span></td>
+        <td><%=couponMember.createTime%></td>
+        </tr>
+        <% }%>
+    </script>
+    <script>
+        seajs.use(['jquery', 'request', 'template', 'pager', 'tip'], function($, REQUEST, template, pager, TIP) {
+            var $pageBox = $('#page-box');
+            var $tableList = $("#table-list");
+            var queryUrl = REQUEST.url("inquirePageCouponMemberList");
+            $pageBox.pager({
+                form: "",
+                url: queryUrl,
+                param: {"data": {"pageNo": 1, "pageCount": 10}, "encryptType": 1},
+                callback: function(res) {
+                    if (res.resultCode == 0) {
+                        res = res.data;
+                        res.dataList && $tableList.html(template.render('couponMemberListTemplate', res));
+                    } else {
+                        TIP.show(2, "查询失败");
+                    }
+                }
+            });
+            var deleteUrl = REQUEST.url('deleteConsuption');
+            $tableList.on("click", ".opt", function() {
+                var $this = $(this);
+                REQUEST.post(deleteUrl, {"data": {"consuptionId": $this.attr("data-id")}}, function(res) {
+                    if (res.resultCode == 0) {
+                        TIP.show(1, "操作成功");
+                        $this.parents("tr").remove();
+                    } else {
+                        TIP.show(2, "操作失败");
+                    }
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>

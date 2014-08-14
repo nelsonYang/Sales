@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>优惠券管理 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/coupon/couponSet.html">基本设置</a></li>
+        <li><a href="#html/coupon/couponInfoList.html" class="current">优惠券列表</a></li>
+        <li><a href="#html/coupon/couponGetMemberList.html">领取优惠券的会员</a></li>
+        <li><a href="#html/coupon/couponUseList.html">优惠券使用记录</a></li>
+    </ul>
+    <div class="button-box ml10 mb10 pt20">
+        <a href="#html/coupon/couponInfoSet.html" class="blue-btn normal-btn">添加优惠券</a>   
+    </div>
+    <!-- 表格 -->
+    <div class="table-box">
+        <table>
+            <thead>
+            <th class="w100">优惠券ID</th>
+            <th>优惠券名称</th>
+            <th class="w150">触发关键词</th>
+            <th class="w100">可用次数</th>
+            <th class="w350">有效时间</th>
+            <th class="w100">状态</th>
+            <th class="w100">操作</th>
+            </thead>
+            <tbody id="table-list">
+            </tbody>
+        </table>
+    </div>
+    <!-- 分页 -->
+    <div class="page-box" id="page-box"></div>
+    <!-- 模板 -->
+    <script id="couponInfoListTemplate" type="text/html">
+        <% var couponInfo, couponInfoId; %>
+        <% for ( i = 0, len = dataList.length; i < len; i++ ) { couponInfo = dataList[i]; couponInfoId = couponInfo.couponId; %>
+        <tr>
+        <td><%=couponInfoId%></td>
+        <td><%=couponInfo.couponName%></td>
+        <td><%=couponInfo.keyword%></td>
+        <td><%=couponInfo.availableCount%></td>
+        <td><span><%=couponInfo.effectiveStartTime%></span> 至 <span><%=couponInfo.effectiveEndTime%></span></td>
+        <td>
+        <% if(couponInfo.status=="0"){ %>
+        <strong>未开启</strong>
+        <%} else {%>
+        <span>正常显示</span>
+        <%}%>
+        </td>
+        <td>
+        <a href="#html/coupon/couponInfoSet.html?couponInfoId=<%=couponInfoId%>">编辑</a>
+        <a href="javascript:;" data-id="<%=couponInfoId%>" class="opt">删除</a>
+        </td>
+        </tr>
+        <% }%>
+    </script>
+    <script>
+        seajs.use(['jquery', 'request', 'template', 'pager', 'tip'], function($, REQUEST, template, pager, TIP) {
+            var $pageBox = $('#page-box');
+            var $tableList = $("#table-list");
+            var queryUrl = REQUEST.url("inquirePageCouponList");
+            $pageBox.pager({
+                form: "",
+                url: queryUrl,
+                param: {"data": {"pageNo": 1, "pageCount": 10}, "encryptType": 1},
+                callback: function(res) {
+                    if (res.resultCode == 0) {
+                        res = res.data;
+                        res.dataList && $tableList.html(template.render('couponInfoListTemplate', res));
+                    } else {
+                        TIP.show(2, "查询失败");
+                    }
+                }
+            });
+            var deleteUrl = REQUEST.url('deleteCoupon');
+            $tableList.on("click", ".opt", function() {
+                var $this = $(this);
+                REQUEST.post(deleteUrl, {"data": {"couponId": $this.attr("data-id")}}, function(res) {
+                    if (res.resultCode == 0) {
+                        TIP.show(1, "操作成功");
+                        $this.parents("tr").remove();
+                    } else {
+                        TIP.show(2, "操作失败");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>优惠券使用记录 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/coupon/couponSet.html">基本设置</a></li>
+        <li><a href="#html/coupon/couponInfoList.html">优惠券列表</a></li>
+        <li><a href="#html/coupon/couponGetMemberList.html">领取优惠券的会员</a></li>
+        <li><a href="#html/coupon/couponUseList.html" class="current">优惠券使用记录</a></li>
+    </ul>
+    <div class="form-box">
+        <form method="post" id="couponUseSetForm">
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="couponId"><b>*</b>优惠券ID：</label>
+                </div>
+                <div class="inner-group fl">
+                    <div class="input-box clearfix"><input type="text" class="normal-input" name="couponId" id="couponId"></div>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="couponName"><b>*</b>优惠券名称：</label>
+                </div>
+                <div class="input-box fl"><input type="text" class="normal-input" name="couponName" id="couponName"></div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="consumeMoney"><b>*</b>消费金额：</label>
+                </div>
+                <div class="input-box fl"><input type="text" class="normal-input" name="consumeMoney" id="consumeMoney"></div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="operatorName"><b>*</b>操作员：</label>
+                </div>
+                <div class="input-box fl"><input type="text" class="normal-input" name="operatorName" id="operatorName"></div>
+            </div>
+            <div class="button-box ml125 pt20">
+                <input type="submit" class="green-btn sub-btn" id="sub-btn" value="确认提交">
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'validation', 'tip', 'jump'], function($, REQUEST, validate, TIP, JUMP) {
+            var $subBtn = $("#sub-btn");
+            var $couponUseSetForm = $("#couponUseSetForm");
+            var queryUrl = REQUEST.url('insertConsuption');
+            $couponUseSetForm.validate({
+                ignore: "",
+                submitHandler: function(form) {
+                    $subBtn.addClass('sub-ing').val("提交中...");
+                    var param = {"encryptType": 1, "data": {"availableCount": -1}};
+                    REQUEST.form(form, queryUrl, param, function(res) {
+                        if (res.resultCode == 0) {
+                            TIP.show(1, "操作成功");
+                            setTimeout((function() {
+                                JUMP.to('html/coupon/couponUseList.html');
+                            }), 1000);
+                        } else {
+                            TIP.show(2, "操作失败");
+                            $subBtn.removeClass('sub-ing').val("确认提交");
+                        }
+                    });
+                },
+                rules: {
+                    couponId: {required: true},
+                    couponName: {required: true},
+                    consumeMoney: {required: true},
+                    operatorName: {required: true}
+                },
+                messages: {
+                    couponId: {required: "请输入优惠券ID"},
+                    couponName: {required: "请输入优惠券名称"},
+                    consumeMoney: {required: "请输入消费金额"},
+                    operatorName: {required: "请输入操作员姓名"}
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta charset="utf-8">
+        <meta name="description" content="微COOL工作室"/>
+        <meta name="keywords" content="微COOL工作室"/>
+        <title>微COOL工作室 - 微信营销平台</title>
+        <link rel="stylesheet" href="css/new-basic.css">
+    </head>
+    <body>
+        <div class="header clearfix" id="header">
+            <div class="logo fl">
+                <img src="images/logo.png" alt="微COOL工作室"> 
+            </div>
+            <ul class="top-nav fl" id="top-nav">
+                <li><a href="index.html" class="current-nav">我的帐号首页</a></li>
+                <li><a href="#html/editPassword.html" >修改密码</a></li>
+                <li><a href="http://115.29.137.120/Sales/upload/caozuoshuoming.rar">使用说明</a></li>
+                <li><a href="http://115.29.137.120/Sales/upload/caozuoshuoming.rar">使用手册下载</a></li>
+                <!--<li><a href="javasript:;">推广技巧</a></li>-->
+            </ul>
+            <ul class="top-nav fr">
+                <li><a href="login.html" class="login-out" id="login-out"><i></i>安全退出</a></li>
+            </ul>
+        </div>
+        <div class="con clearfix">
+            <div class="side-nav" id="nav">
+                <dl>
+                    <dt>我的微信</dt>
+                    <dd>
+                        <a href="#html/myWeixin/firstFollowSet.html">+首次关注设置</a>
+                        <a href="#html/myWeixin/menuList.html">+自定义菜单设置</a>
+                        <a href="#html/myWeixin/keywordReplyList.html">+关键词回复设置</a>
+                        <a href="#html/myWeixin/weixinTokenSet.html">+微信接口配置</a>
+                        <a href="#html/myWeixin/weixinAuthSet.html">+微信授权配置</a>
+                        <!-- <a href="#html/myWeixin/spreadSetList.html" >+推广渠道管理</a> -->
+                        <!--<a href="#html/myWeixin/" class="last">+便民工具管理</a>-->
+                    </dd>
+                    <dt>素材管理</dt>
+                    <dd>
+                        <a href="#html/source/imageTextList.html" >+图文消息管理</a>
+                        <a href="#html/source/urlList.html" >+自定义URL管理</a>
+                        <a href="#html/source/systemUrlList.html" class="last">+系统URL查询</a>
+                    </dd>
+                    <dt>微官网管理</dt>
+                    <dd>
+                        <a href="#html/microWeb/basicSet.html" >+基本设置</a>
+                        <a href="#html/microWeb/skinSet.html" >+风格设置</a>
+                        <a href="#html/microWeb/columnList.html" >+首页设置</a>
+                        <a href="#html/microWeb/columnList.html" class="last">+栏目管理</a>
+                        <!-- <a href="#html/microWeb/lbsSet.html" class="last">+一键导航</a> -->
+                    </dd>
+                    <dt>企业微运用</dt>
+                    <dd>
+                        <a href="#html/companyMicroApp/reserveBasicSet.html">+基本设置</a>
+                        <a href="#html/companyMicroApp/reserveList.html" class="last">+预约管理</a>
+                    </dd>
+                    <dt>会员管理</dt>
+                    <dd>
+                        <a href="#html/member/memberList.html">+会员管理</a>
+                        <a href="#html/member/memberLevelList.html">+会员等级设置</a>
+                        <a href="#html/member/memberCardBasicSet.html">+会员卡基本设置</a>
+                        <a href="#html/member/memberCardList.html">+会员卡管理</a>
+                        <a href="#html/member/memberCardGetList.html" class="last">+会员卡领取记录</a>
+                    </dd>
+                    <dt>优惠券管理</dt>
+                    <dd>
+                        <a href="#html/coupon/couponSet.html">+基本设置</a>
+                        <a href="#html/coupon/couponInfoList.html">+优惠券列表</a>
+                        <a href="#html/coupon/couponGetMemberList.html" class="last">+领取优惠券的会员</a>
+                        <a href="#html/coupon/couponUseList.html" class="last">+优惠券使用记录</a>
+                    </dd>
+                    <dt>LBS门店定位</dt>
+                    <dd>
+                        <a href="#html/lbs/lbsSet.html">+基本设置</a>
+                        <a href="#html/lbs/storeList.html" class="last">+门店管理</a>
+                    </dd>
+                    <dt>微促销活动</dt>
+                    <dd>
+                        <a href="#html/activity/scratchCardBasicSet.html">+刮刮卡管理</a>
+                        <a href="#html/activity/fruitBasicSet.html">+水果达人管理</a>
+                        <a href="#html/activity/turntableBasicSet.html" class="last">+欢乐大转盘管理</a>
+                    </dd>
+                    <dt>数据魔方</dt>
+                    <dd>
+                        <a href="#html/data/fansTotal.html">+粉丝数据统计</a>
+                        <a href="#html/data/memberRegTotal.html">+会员注册统计</a>
+                        <a href="#html/data/menuTotal.html">+自定义菜单点击量</a>
+                        <a href="#html/data/eventTotal.html">+微促销统计</a>
+                        <a href="#html/data/siteTotal.html" class="last">+微官网统计</a>
+                    </dd>
+                </dl>
+            </div>
+            <div class="main-con">
+                <div class="content" id="js-load-container">
+                </div>
+            </div>
+        </div>
+        <script src="js/sea.js" id="seajsnode"></script>
+        <script src="js/seajs-config.js"></script>
+        <script>
+            seajs.use('modules/nav.js');
+            if (!location.hash && !location.search) {
+                seajs.use(['jquery'], function($) {
+                    $("#js-load-container").load("indexMain.html");
+                });
+            }
+        </script>
+    </body>
+</html>

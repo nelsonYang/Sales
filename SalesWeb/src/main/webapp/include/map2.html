@@ -1,0 +1,81 @@
+<div class="box" style="margin-bottom: 3px">
+    <div class="ipt-box fl">
+        <input type="text" id="addressKeyWord" >
+    </div>
+    <button type="button" class="blue-btn form-btn ml10" id="addressSearch">快速搜索</button>
+    <div class="tip-box">
+        <p>如：福州 仓山区 万达广场（<strong>您可能需要放大地图</strong>）<strong><a href="http://ugc.map.qq.com/AppBox/Landlord/" target="_blank" style="color: #333; margin-left: 10px;">没有找到吗？</a></strong></p>
+    </div>
+</div>
+<div id="mapContainer" style="width:514px; height:346px; border: 2px solid #ddd;"></div>
+<script>
+    (function() {
+        var geocoder = null;
+        var latitudeInput = document.getElementById("latitude");
+        var longitudeInput = document.getElementById("longitude");
+
+        function clearOverlays(overlays) {
+            var overlay;
+            while (overlay = overlays.pop()) {
+                overlay.setMap(null);
+            }
+        }
+        var mapInit = function() {
+            var map = new qq.maps.Map(document.getElementById('mapContainer'), {
+                zoom: 18
+            });
+            // 标注
+            var marker = new qq.maps.Marker({map: map, animation: qq.maps.MarkerAnimation.DROP});
+            marker.setVisible(true);
+            marker.setDraggable(true);
+            if (latitudeInput.value && longitudeInput.value) {
+                var center = new qq.maps.LatLng(latitudeInput.value, longitudeInput.value);
+                marker.setPosition(center);
+                map.setCenter(center);
+                // marker.setAnimation(map.Animation.DROP);
+            } else {
+                // 默认显示客户端浏览器IP地址所在城市地图
+                citylocation = new qq.maps.CityService({
+                    complete: function(result) {
+                        map.setCenter(result.detail.latLng);
+                    }
+                });
+                citylocation.searchLocalCity();
+            }
+            // 通过地址搜索显示地图
+            geocoder = new qq.maps.Geocoder({
+                complete: function(result) {
+                    map.setCenter(result.detail.location);
+                }
+            });
+            // 地图点击事件
+            qq.maps.event.addListener(map, 'click', function(event) {
+                var latitude = event.latLng.getLat();
+                var longitude = event.latLng.getLng();
+                marker.setPosition(new qq.maps.LatLng(latitude, longitude));
+                latitudeInput.value = latitude;
+                longitudeInput.value = longitude;
+            });
+            qq.maps.event.addListener(marker, 'dragend', function(event) {
+                var latitude = event.latLng.getLat();
+                var longitude = event.latLng.getLng();
+                marker.setPosition(new qq.maps.LatLng(latitude, longitude));
+                latitudeInput.value = latitude;
+                longitudeInput.value = longitude;
+            });
+        }
+        mapInit();
+        (function() {
+            var addressKeyWord = document.getElementById("addressKeyWord");
+            /*addressKeyWord.onfocus=function(){
+             this.parentNode.className="item-ipt fl item-ipt-focus";
+             };
+             addressKeyWord.onblur=function(){
+             this.parentNode.className="item-ipt fl";
+             };*/
+            document.getElementById("addressSearch").onclick = function() {
+                geocoder.getLocation(addressKeyWord.value);
+            };
+        })();
+    })();
+</script>

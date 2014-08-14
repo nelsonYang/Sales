@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../../js/mobile/jquery.mobile-1.3.2.min.css">
+        <script src="../../js/mobile/jquery-1.8.3.min.js"></script>
+        <script src="../../js/mobile/jquery.mobile-1.3.2.min.js"></script>
+        <script src="../../js/sea.js" id="seajsnode"></script>
+        <script src="../../js/seajs-config.js"></script>
+    </head>
+    <body>
+
+        <div data-role="page">
+            <div data-role="header">
+                <h1>修改会员信息</h1>
+            </div>
+            <div data-role="content" style="padding: 0px;">
+                <div style="height:100px;background-image: url('../../images/commonback.jpg');">
+                    <div class="logo" style="padding: 10px;float: left;">
+                        <img alt="图片" src="../../images/logo.jpg" height="80">
+                    </div>
+                    <div class="info logo">
+                        <div>[普通会员]</div>
+                        <div>积分0</div>
+                    </div>
+                </div>
+
+                <form method="post" id="memberForm" class="form" style="padding:15px;border: 5px solid #dedede;background: #e2e2e2;margin: 10px; -moz-border-radius: 10px;  -webkit-border-radius: 10px;border-radius:10px;">
+                    <input type="text" name="realName" id="realName" placeholder="用户名">
+                    <input type="text" name="qqNO" id="qqNO" placeholder="qq号码">
+                    <input type="text" name="email" id="email" placeholder="邮箱">
+                    <input type="submit"  id="sub-btn" value="提  交">
+                </form>
+            </div>
+            <div data-role="footer"  data-position="fixed" data-tap-toggle="false">
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="memberCardDetail.html" data-icon="home" data-theme="a">会员卡</a></li>
+                        <li><a href="integration.html" data-icon="home" data-theme="a">积分</a></li>
+                        <li><a href="coupon.html" data-icon="home" data-theme="a">优惠券</a></li>
+                        <li><a href="modifymemberinfo.html" data-icon="home" data-theme="a" >我的资料</a></li>
+                    </ul>
+                </div>   
+            </div>  
+        </div>
+        <script type="text/javascript">
+            seajs.use(['jquery', 'request', 'validation', 'template', 'pager', 'tip', 'search', 'storage', 'static'], function($, REQUEST, validate, TEMPLATE, PAGER, TIP, SEARCH, STORAGE, STATIC) {
+                var $subBtn = $("#sub-btn");
+                var $memberForm = $("#memberForm");
+                var param = SEARCH.getParam(location.search);
+                var token = param.token;
+                if (!token) {
+                    token = STORAGE.get(STATIC.COMPANY_TOKEN);
+                    if (token) {
+                        STORAGE.set(STATIC.COMPANY_TOKEN, token);
+                    }
+                }
+                // var token = "c2FsZXMtMQ==";
+                var memberId = param.memberId;
+                if (!memberId) {
+                    memberId = STORAGE.get(STATIC.WEIXIN_MEMBER_ID);
+                }
+
+                var updateUrl = REQUEST.url("updateMemberByToken");
+                $memberForm.validate({
+                    ignore: "",
+                    submitHandler: function(form) {
+                        $subBtn.addClass('sub-ing').val("提交中...");
+                        var param = {"encryptType": 2, "data": {"token": token, "memberId": memberId}};
+                        REQUEST.form(form, updateUrl, param, function(res) {
+                            if (res.resultCode == 0) {
+                                alert('修改成功');
+                            } else {
+                                $subBtn.removeClass('sub-ing').val("确认提交");
+                                alert('修改失败');
+
+                            }
+                        });
+                    },
+                    rules: {
+                        token: {required: true},
+                        realName: {required: true}
+                    },
+                    messages: {
+                        token: {required: "token不能为空"},
+                        realName: {required: "请输入姓名"}
+
+                    }
+                });
+                REQUEST.post(REQUEST.url("inquireMemberByIdAndToken"), {"encryptType": 2, "data": {"token": token, "memberId": memberId}}, function(res) {
+                    if (res.resultCode == 0) {
+                        res = res.data;
+                        $('#realName').val(res.realName);
+                        $('#qqNO').val(res.qqNO);
+                        $('#email').val(res.email);
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>会员管理 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/member/memberList.html">会员管理</a></li>
+        <li><a href="#html/member/memberLevelList.html" class="current">会员等级设置</a></li>
+        <li><a href="#html/member/memberCardBasicSet.html">会员卡基本设置</a></li>
+        <li><a href="#html/member/memberCardList.html">会员卡</a></li>
+        <li><a href="#html/member/memberCardGetList.html">会员卡领取记录</a></li>
+        <!-- <li><a href="#html/member/customerPasswordSet.html">商家密码设置</a></li> -->
+    </ul>
+    <div class="button-box ml10 mb10 pt20">
+        <a href="#html/member/memberLevelSet.html" class="blue-btn normal-btn">添加会员卡等级</a>
+    </div>
+    <!-- 表格 -->
+    <div class="table-box">
+        <table>
+            <thead>
+            <th class="w100" >序号</th>
+            <th class="w200">会员等级</th>
+            <th class="w100">会员积分区间</th>
+            <th class="w100">操作</th>
+            </thead>
+            <tbody id="table-list">
+            </tbody>
+        </table>
+    </div>
+    <!-- 分页 -->
+    <div class="page-box" id="page-box"></div>
+    <!-- 模板 -->
+    <script id="memberLevelListTemplate" type="text/html">
+        <% var member, memberCardLevelId; %>
+        <% for ( i = 0, len = dataList.length; i < len; i++ ) { member = dataList[i]; memberCardLevelId = member.memberCardLevelId; %>
+        <tr>
+        <td><%=memberCardLevelId%></td>
+        <td><%=member.memberCardLevel%></td>
+        <td><%=member.memberCardLevelMin%> 至 <%=member.memberCardLevelMax%></td>
+        <td>
+        <a href="#html/member/memberLevelSet.html?memberCardLevelId=<%=memberCardLevelId%>">编辑</a>
+        </td>
+        </tr>
+        <% }%>
+    </script>
+    <script>
+        seajs.use(['jquery', 'request', 'template', 'pager', 'tip'], function($, REQUEST, template, pager, TIP) {
+            var $pageBox = $('#page-box');
+            var $tableList = $("#table-list");
+            var queryUrl = REQUEST.url("inquirePageMemberCardLevelList");
+            $pageBox.pager({
+                form: "",
+                url: queryUrl,
+                param: {"data": {"pageNo": 1, "pageCount": 10}, "encryptType": 1},
+                callback: function(res) {
+                    if (res.resultCode == 0) {
+                        res = res.data;
+                        res.dataList && $tableList.html(template.render('memberLevelListTemplate', res));
+                    } else {
+                        TIP.show(2, "查询失败");
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

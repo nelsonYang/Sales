@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>会员卡设置 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/member/memberList.html">会员管理</a></li>
+        <li><a href="#html/member/memberLevelList.html">会员等级设置</a></li>
+        <li><a href="#html/member/memberCardBasicSet.html">会员卡基本设置</a></li>
+        <li><a href="#html/member/memberCardList.html" class="current">会员卡</a></li>
+        <li><a href="#html/member/memberCardGetList.html">会员卡领取记录</a></li>
+        <!-- <li><a href="#html/member/customerPasswordSet.html">商家密码设置</a></li> -->
+    </ul>
+    <div class="form-box">
+        <form method="post" id="memberCardSetForm">
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="keyword"><b>*</b>关键字：</label>
+                </div>
+                <div class="input-box fl"><input type="text" class="normal-input" name="keyword" id="keyword"></div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="status"><b>*</b>会员卡状态：</label>
+                </div>
+                <div class="radio-box clearfix">
+                    <input type="radio" name="status" id="status-1" checked="checked" value="1"><label for="status-1">启用</label>
+                    <input type="radio" name="status" id="status-0" value="0"><label for="status-0">禁止</label>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="memberCardName"><b>*</b>会员卡名称：</label>
+                </div>
+                <div class="input-box fl"><input type="text" class="normal-input" name="memberCardName" id="memberCardName"></div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="effectiveStartTime"><b>*</b>有效开始时间：</label>
+                </div>
+                <div class="input-box fl"><input type="text" class="normal-input" name="effectiveStartTime" id="effectiveStartTime"></div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="effectiveEndTime"><b>*</b>有效结束时间：</label>
+                </div>
+                <div class="input-box fl"><input type="text" class="normal-input" name="effectiveEndTime" id="effectiveEndTime"></div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl"><label class="input-item" for=""><b>*</b>会员卡背景：</label></div>
+                <div class="inner-group fl">
+                    <div class="button-box">
+                        <button type="button" class="blue-btn normal-btn" id="pic-upload-card">上传图片</button>
+                    </div>
+                    <div class="tip-box">大图尺寸建议：<strong>640*360px</strong></div>
+                    <div class="clearfix">
+                        <input type="hidden" name="memberCardURL" id="memberCardURL">
+                    </div>
+                    <div class="pic-preview-box pt10" id="upload-box-card">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl"><label class="input-item" for=""><b>*</b>商家LOGO：</label></div>
+                <div class="inner-group fl">
+                    <div class="button-box">
+                        <button type="button" class="blue-btn normal-btn" id="pic-upload-logo">上传图片</button>
+                    </div>
+                    <div class="clearfix">
+                        <input type="hidden" name="memberLogoURL" id="memberLogoURL">
+                    </div>
+                    <div class="pic-preview-box pt10" id="upload-box-logo">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl"><label class="input-item" for="memberCardDesc">会员卡简介：</label></div>
+                <div class="textarea-box fl">
+                    <textarea name="memberCardDesc" class="big-textarea" id="memberCardDesc" cols="30" rows="4"></textarea>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl"><label class="input-item" for="memberCardPrivileges">会员卡特权：</label></div>
+                <div class="textarea-box fl">
+                    <textarea name="memberCardPrivileges" class="big-textarea" id="memberCardPrivileges" cols="30" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="button-box ml125 pt20">
+                <input type="submit" class="green-btn sub-btn" id="sub-btn" value="确认提交">
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'validation', 'tip', 'jump', 'search', 'formFill', 'datePicker', 'upload'], function($, REQUEST, validate, TIP, JUMP, SEARCH, FILL, datePicker, upload) {
+            var $subBtn = $("#sub-btn");
+            var $memberCardSetForm = $("#memberCardSetForm");
+            var param = SEARCH.get();
+            var memberCardId = param.memberCardId;
+            var queryUrl;
+
+            var $uploadBoxLogo = $('#upload-box-logo');
+            var $memberLogoURL = $("#memberLogoURL");
+            $uploadBoxLogo.imageUpload({
+                btn_id: 'pic-upload-logo',
+                max_num: 1,
+                change_callback: function(data) {
+                    var imgSrc = data.length ? data[0][0].filePath : "";
+                    $memberLogoURL.val(imgSrc);
+                }
+            });
+
+            var $uploadBoxCard = $('#upload-box-card');
+            var $memberCardURL = $("#memberCardURL");
+            $uploadBoxCard.imageUpload({
+                btn_id: 'pic-upload-card',
+                max_num: 1,
+                change_callback: function(data) {
+                    var imgSrc = data.length ? data[0][0].filePath : "";
+                    $memberCardURL.val(imgSrc);
+                }
+            });
+
+            // 获取会员卡详情;
+            if (memberCardId) {
+                queryUrl = REQUEST.url('updateMemberCard');
+                REQUEST.post(REQUEST.url('inquireMemberCardById'), {"encryptType": 1, "data": {"memberCardId": memberCardId}}, function(res) {
+                    if (res.resultCode == 0) {
+                        var res = res.data;
+                        var memberLogoURL = res.memberLogoURL;
+                        if (memberLogoURL) {
+                            var imageArr = [[{"filePath": memberLogoURL, "type": 1}]];
+                            $uploadBoxLogo.imageUpload('renderData', imageArr);
+                        }
+                        var memberCardURL = res.memberCardURL;
+                        if (memberCardURL) {
+                            var imageArr = [[{"filePath": memberCardURL, "type": 1}]];
+                            $uploadBoxCard.imageUpload('renderData', imageArr);
+                        }
+                        FILL.fill($memberCardSetForm, res);
+                    } else {
+                        TIP.show(2, "查询信息失败");
+                    }
+                });
+            } else {
+                queryUrl = REQUEST.url('insertMemberCard');
+            }
+
+            $("#effectiveStartTime").on('click', function() {
+                WdatePicker({readOnly: true, skin: "twoer", dateFmt: 'yyyy-MM-dd HH:mm:ss', firstDayOfWeek: 1, maxDate: '#F{$dp.$D(\'effectiveEndTime\')}'});
+            });
+            $("#effectiveEndTime").on('click', function() {
+                WdatePicker({readOnly: true, skin: "twoer", dateFmt: 'yyyy-MM-dd HH:mm:ss', firstDayOfWeek: 1, minDate: '#F{$dp.$D(\'effectiveStartTime\',{d:1})}'});
+            });
+
+            $memberCardSetForm.validate({
+                ignore: "",
+                submitHandler: function(form) {
+                    $subBtn.addClass('sub-ing').val("提交中...");
+                    var param = {"encryptType": 1, "data": {"readCount": 0, "clickCount": 0, "balance": 0, "consumeMoney": 0, "memberCardConfigId": -1}};
+                    memberCardId && (param.data.memberCardId = memberCardId);
+                    REQUEST.form(form, queryUrl, param, function(res) {
+                        if (res.resultCode == 0) {
+                            TIP.show(1, "操作成功");
+                            setTimeout((function() {
+                                JUMP.to('html/member/memberCardList.html');
+                            }), 1000);
+                        } else {
+                            TIP.show(2, "操作失败");
+                            $subBtn.removeClass('sub-ing').val("确认提交");
+                        }
+                    });
+                },
+                rules: {
+                    keyword: {required: true},
+                    memberCardURL: {required: true},
+                    memberLogoURL: {required: true},
+                    memberCardName: {required: true},
+                    effectiveStartTime: {required: true},
+                    effectiveEndTime: {required: true},
+                    status: {required: true}
+                },
+                messages: {
+                    keyword: {required: "请输入关键字"},
+                    memberCardURL: {required: "请上传会员背景"},
+                    memberLogoURL: {required: "请上传商家LOGO"},
+                    memberCardName: {required: "请输入会员卡名称"},
+                    effectiveStartTime: {required: "请选择开始时间"},
+                    effectiveEndTime: {required: "请选择结束时间"},
+                    status: {required: "请选择会员卡状态"}
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>微促销统计 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/data/fansTotal.html">粉丝数据统计</a></li>
+        <li><a href="#html/data/memberRegTotal.html">会员注册统计</a></li>
+        <li><a href="#html/data/menuTotal.html">自定义菜单点击量</a></li>
+        <li><a href="#html/data/eventTotal.html" class="current">微促销统计</a></li>
+        <li><a href="#html/data/siteTotal.html">微官网统计</a></li>
+    </ul>
+    <!-- 表格 -->
+    <div class="table-box pt20">
+        <table>
+            <thead>
+            <th class="w200">统计日期</th>
+            <th class="w200">刮刮卡统计</th>
+            <th class="w200">水果达人统计</th>
+            <th>欢乐大转盘</th>
+            </thead>
+            <tbody id="table-list">
+            </tbody>
+        </table>
+    </div>
+    <!-- 分页 -->
+    <div class="page-box" id="page-box"></div>
+    <!-- 模板 -->
+    <script id="eventTotalListTemplate" type="text/html">
+        <% var eventTotal; %>
+        <% for ( i = 0, len = dataList.length; i < len; i++ ) { eventTotal = dataList[i]; %>
+        <tr>
+        <td><%=eventTotal.date%></td>
+        <td><span><%=eventTotal.guguCount%></span></td>
+        <td><span><%=eventTotal.shuiguoCount%></span></td>
+        <td><span><%=eventTotal.dazhuanpanCount%></span></td>
+        </tr>
+        <% }%>
+    </script>
+    <script>
+        seajs.use(['jquery', 'request', 'template', 'pager', 'tip'], function($, REQUEST, template, pager, TIP) {
+            var $pageBox = $('#page-box');
+            var $tableList = $("#table-list");
+            var queryUrl = REQUEST.url("inquireMenuClick");
+            $pageBox.pager({
+                form: "",
+                url: queryUrl,
+                param: {"data": {"pageNo": 1, "pageCount": 10}, "encryptType": 0},
+                callback: function(res) {
+                    if (res.resultCode == 0) {
+                        res = res.data;
+                        res.dataList && $tableList.html(template.render('eventTotalListTemplate', res));
+                    } else {
+                        TIP.show(2, "查询失败");
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

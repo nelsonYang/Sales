@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>自定义URL 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/source/imageTextList.html">图文消息管理</a></li>
+        <li><a href="#html/source/urlList.html" class="current">自定义URL</a></li>
+        <li><a href="#html/source/systemUrlList.html">系统URL查询</a></li>
+    </ul>
+    <div class="form-box search-box">
+        <form method="post" id="urlForm">
+            <div class="form-group clearfix">
+                <div class="inner-group fl">
+                    <div class="label-item fl">
+                        <label class="input-item" for="resourcesName">名称：</label>
+                    </div>
+                    <div class="input-box fl">
+                        <input type="text" class="small-input" name="resourcesName" id="resourcesName">
+                    </div>
+                </div>
+                <div class="inner-group fl ml20">
+                    <div class="label-item fl">
+                        <label class="input-item" for="resourcesURL">URL：</label>
+                    </div>
+                    <div class="input-box fl">
+                        <input type="text" class="normal-input" name="resourcesURL" id="resourcesURL">
+                    </div>
+                </div>
+                <div class="button-box fl ml15">
+                    <input type="submit" class="green-btn form-normal-btn" id="sub-btn" value="确认提交">
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- 表格 -->
+    <div class="table-box">
+        <table>
+            <thead>
+            <th class="w100">URL ID</th>
+            <th class="w200">名称</th>
+            <th>URL</th>
+            <th class="w150">操作</th>
+            </thead>
+            <tbody id="table-list">
+            </tbody>
+        </table>
+    </div>
+    <!-- 分页 -->
+    <div class="page-box" id="page-box"></div>
+    <!-- 模板 -->
+    <script id="urlListTemplate" type="text/html">
+        <% var url, urlId; %>
+        <% for ( i = 0, len = dataList.length; i < len; i++ ) { url = dataList[i]; resourcesId = url.resourcesId; %>
+        <tr>
+        <td><%=resourcesId%></td>
+        <td><%=url.resourcesName%></td>
+        <td><%=url.resourcesURL%></td>
+        <td>
+        <a href="javascript:;" data-id="<%=resourcesId%>" class="edit">编辑</a>
+        <a href="javascript:;" data-id="<%=resourcesId%>" class="del">删除</a>
+        </td>
+        </tr>
+        <% }%>
+    </script>
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'validation', 'tip', 'jump', 'search', 'formFill', 'template', 'pager'], function($, REQUEST, validate, TIP, JUMP, SEARCH, FILL, template, pager) {
+            var $urlForm = $("#urlForm");
+            var $tableList = $("#table-list");
+            var $pageBox = $('#page-box');
+            var $subBtn = $("#sub-btn");
+            var queryUrl = REQUEST.url('insertResourcesURL');
+            var resourcesId;
+            $urlForm.validate({
+                ignore: "",
+                submitHandler: function(form) {
+                    $subBtn.addClass('sub-ing').val("提交中...");
+                    var param = {"encryptType": 1, "data": {"resourcesType": 4}};
+                    resourcesId && (param.data = {"resourcesId": resourcesId});
+                    REQUEST.form(form, queryUrl, param, function(res) {
+                        $subBtn.removeClass('sub-ing').val("确认提交");
+                        if (res.resultCode == 0) {
+                            TIP.show(1, "操作成功");
+                            setTimeout((function() {
+                                location.reload();
+                            }), 1000)
+                        } else {
+                            TIP.show(2, "操作失败");
+                        }
+                    });
+                },
+                rules: {
+                    resourcesName: {required: true},
+                    resourcesURL: {required: true}
+                },
+                messages: {
+                    resourcesName: {required: "请输入名称"},
+                    resourcesURL: {required: "请输入URL"}
+                }
+            });
+            $pageBox.pager({
+                form: "",
+                url: REQUEST.url("inquirePageResourcesURLList"),
+                param: {"data": {"pageNo": 1, "pageCount": 10, "resourcesType": 4}, "encryptType": 1},
+                callback: function(res) {
+                    if (res.resultCode == 0) {
+                        res = res.data;
+                        res.dataList && $tableList.html(template.render('urlListTemplate', res));
+                    } else {
+                        TIP.show(2, "查询失败");
+                    }
+                }
+            });
+
+            var deleteUrl = REQUEST.url('deleteResources');
+            $tableList.on("click", ".del", function() {
+                var $this = $(this);
+                REQUEST.post(deleteUrl, {"data": {"resourcesId": $this.attr("data-id")}}, function(res) {
+                    if (res.resultCode == 0) {
+                        TIP.show(1, "操作成功");
+                        $this.parents("tr").remove();
+                    } else {
+                        TIP.show(2, "操作失败");
+                    }
+                });
+            });
+
+            $tableList.on("click", ".edit", function() {
+                var $this = $(this);
+                var urlId = $this.attr("data-id");
+                REQUEST.post(REQUEST.url('inquireResourcesURLById'), {"encryptType": 1, "data": {"resourcesId": urlId}}, function(res) {
+                    if (res.resultCode == 0) {
+                        var res = res.data;
+                        queryUrl = REQUEST.url('updateResourcesURL');
+                        resourcesId = urlId;
+                        FILL.fill($urlForm, res);
+                    } else {
+                        TIP.show(2, "查询信息失败");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

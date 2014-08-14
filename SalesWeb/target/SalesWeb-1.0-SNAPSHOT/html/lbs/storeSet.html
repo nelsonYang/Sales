@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>门店管理 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/lbs/lbsSet.html">基本设置</a></li>
+        <li><a href="#html/lbs/storeList.html" class="current">门店管理</a></li>
+    </ul>
+    <div class="form-box">
+        <form method="post" id="storeForm">
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="merchantName"><b>*</b>门店名称：</label>
+                </div>
+                <div class="input-box fl"><input type="text" class="normal-input" name="merchantName" id="merchantName"></div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl"><label class="input-item" for="backgroupImageURL"><b>*</b>门店图片：</label></div>
+                <div class="inner-group fl">
+                    <div class="button-box">
+                        <button class="blue-btn form-normal-btn" id="pic-upload">上传图片</button>
+                    </div>
+                    <div class="tip-box">大图尺寸建议：<strong>640*360px</strong></div>
+                    <div class="clearfix">
+                        <input type="hidden" name="backgroupImageURL" id="backgroupImageURL" value="http://www.baidu.com/logo.png">
+                    </div>
+                    <div class="pic-preview-box pt10" id="upload-box">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl"><label class="input-item" for="telphone"><b>*</b>联系电话：</label></div>
+                <div class="inner-group fl">
+                    <div class="textarea-box clearfix">
+                        <textarea name="telphone" class="normal-textarea" id="telphone" cols="30" rows="5"></textarea>
+                    </div>
+                    <div class="tip-box">如果有多个电话，每行填写一个</div>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="address"><b>*</b>详细地址：</label>
+                </div>
+                <div class="inner-group fl">
+                    <div class="inner-group clearfix">
+                        <div class="input-box fl">
+                            <input type="text" name="address" class="normal-input" id="address" placeholder="详细地址">
+                        </div>
+                        <div class="button-box fl">
+                            <button class="blue-btn form-small-btn ml10">定位</button>
+                        </div>
+                    </div>
+                    <div class="tip-box">
+                        如果输入地址后点击定位按钮无法定位，请在地图上直接点击选择地点
+                    </div>
+                    <div class="inner-group mt10" id="mapContainer" style="width:500px; height:300px; border: 2px solid #ddd;">
+                    </div>
+                    <div class="dn">
+                        <input type="hidden" name="lag" class="normal-input" id="lag" value="115.55666">
+                        <input type="hidden" name="lat" class="normal-input" id="lat" value="115.55666">
+                    </div>
+                </div>
+            </div>
+            <div class="button-box ml125 pt20">
+                <input type="submit" class="green-btn sub-btn" id="sub-btn" value="确认提交">
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'validation', 'tip', 'jump', 'search', 'formFill'], function($, REQUEST, validate, TIP, JUMP, SEARCH, FILL) {
+            var $subBtn = $("#sub-btn");
+            var $storeForm = $("#storeForm");
+            var param = SEARCH.get();
+            var merchantId = param.storeId;
+            var queryUrl;
+             var $uploadBox = $('#upload-box');
+            var $backgroupImageURL = $("#backgroupImageURL");
+            $uploadBox.imageUpload({
+                btn_id: 'pic-upload',
+                max_num: 1,
+                change_callback: function(data) {
+                    var imgSrc = data.length ? data[0][0].filePath : "";
+                    $backgroupImageURL.val(imgSrc);
+                }
+            });
+            // 获取门店详情;
+            if (merchantId) {
+                queryUrl = REQUEST.url('updateMerchant');
+                REQUEST.post(REQUEST.url('inquireMerchantById'), {"encryptType": 1, "data": {"merchantId": merchantId}}, function(res) {
+                    if (res.resultCode == 0) {
+                        var res = res.data;
+                        FILL.fill($storeForm, res);
+                    } else {
+                        TIP.show(2, "查询信息失败");
+                    }
+                });
+            } else {
+                queryUrl = REQUEST.url('insertMerchant');
+            }
+            $storeForm.validate({
+                ignore: "",
+                submitHandler: function(form) {
+                    $subBtn.addClass('sub-ing').val("提交中...");
+                    var param = {"encryptType": 1, "data": {"matchType": 1, "merchantConfigId": -1}};
+                    merchantId && (param.data.merchantId = merchantId);
+                    REQUEST.form(form, queryUrl, param, function(res) {
+                        $subBtn.removeClass('sub-ing').val("确认提交");
+                        if (res.resultCode == 0) {
+                            TIP.show(1, "操作成功");
+                            setTimeout((function() {
+                                JUMP.to('html/lbs/storeList.html');
+                            }), 1000);
+                        } else {
+                            TIP.show(2, "操作失败");
+                        }
+                    });
+                },
+                rules: {
+                    merchantName: {required: true},
+                    backgroupImageURL: {required: true},
+                    telphone: {required: true},
+                    address: {required: true},
+                    lag: {required: true}
+                },
+                messages: {
+                    merchantName: {required: "请输入商家名称"},
+                    backgroupImageURL: {required: "请上传门店照片"},
+                    telphone: {required: "请输入联系电话"},
+                    address: {required: "请输入详细地址"},
+                    lag: {required: "请在地图上定位您的门店地址"}
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

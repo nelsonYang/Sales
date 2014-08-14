@@ -1,0 +1,190 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>自定义菜单设置 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/myWeixin/firstFollowSet.html">首次关注设置</a></li>
+        <li><a href="#html/myWeixin/menuSet.html" class="current">自定义菜单设置</a></li>
+        <li><a href="#html/myWeixin/keywordReplySet.html">关键词回复设置</a></li>
+        <li><a href="#html/myWeixin/weixinTokenSet.html">微信接口配置</a></li>
+        <li><a href="#html/myWeixin/weixinAuthSet.html">微信授权配置</a></li>
+        <!--<li><a href="javascript:;">便民工具管理</a></li>-->
+    </ul>
+    <div class="form-info">
+        <p>1. 您的公众平台帐号类型必须为<strong>订阅号并已通过微信认证</strong>或<strong>服务号</strong>。</p>
+        <p>2. 在微信公众平台申请接口使用的<strong>AppId</strong>和<strong>AppSecret</strong>，然后在【<a href="javascript:;">微信授权配置</a>】中设置。</p>
+        <p>3. 最多创建<strong>3</strong>个一级菜单，每个一级菜单下最多可以创建<strong>5</strong>个二级菜单，菜单最多支持两层。</p>
+        <p>4. 拖动树形菜单可以对菜单重排序，但最终只有【<strong>发布菜单</strong>】后才会生效，公众平台限制了每天的发布次数，请勿频繁操作。</p>
+        <p>5. 微信公众平台规定，<strong>菜单发布24小时后生效</strong>。您也可先取消关注，再重新关注即可马上看到菜单。</p>
+        <p>6. 点击【<strong>删除菜单</strong>】操作只删除微信公众平台上的菜单，并不是删除本系统已经设置好的菜单。</p>
+    </div>
+    <div class="form-box">
+        <form method="post" id="menuSetForm">
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="menuName"><b>*</b>菜单名称：</label>
+                </div>
+                <div class="input-box fl">
+                    <input type="text" class="normal-input" name="menuName" id="menuName">
+                </div>                    
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="menuParent"><b>*</b>上级菜单：</label>
+                </div>
+                <div class="select-box fl">
+                    <div id="menuList"></div>
+                </div>                
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="menuType"><b>*</b>菜单类型：</label>
+                </div>
+                <div class="select-box fl">
+                    <select name="menuType" id="menuType">
+                        <option value="1">文字消息</option>
+                        <option value="2">图文消息</option>
+                        <option value="3">链接网址</option>
+                    </select>
+                </div>                
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="menuKey"><b>*</b>菜单内容：</label>
+                </div>
+                <div class="input-box fl" id="content-box">
+                    <input type="text" class="normal-input" name="menuURL" id="menuKey">
+                </div> 
+                <div id="select-box">
+                    <div class="select-box fl">
+                        <div id="menu"></div>
+                    </div>
+                    <div class="text-box fl">
+                        <a href="#html/source/imageTextList.html">素材管理</a>
+                    </div>
+                </div>
+            </div>
+            <div class="button-box ml125 pt20">
+                <input type="submit" class="green-btn sub-btn"  id="sub-btn" value="确认提交">
+            </div>
+        </form>   
+    </div>
+    <script src="js/sea.js" id="seajsnode"></script>
+    <script src="js/seajs-config.js"></script>
+    <script>
+
+        seajs.use(['jquery', 'request', 'validation', 'tip', 'jump', 'search', 'formFill'], function($, REQUEST, validate, TIP, JUMP, SEARCH, FILL) {
+            var $contentBox = $("#content-box");
+            var $selectBox = $("#select-box");
+            var param = SEARCH.get();
+            var menuId = param.menuId;
+            $("#menuType").on("change", function() {
+                if (this.value == 1 || this.value == 3) {
+                    $contentBox.show();
+                    $selectBox.hide().children().children().eq(0).attr("selected", "selected");
+                } else {
+                    $selectBox.show();
+                    $contentBox.hide().children('input').val("");
+                }
+            });
+            $selectBox.hide();
+            var $menu = $("#menu");
+            REQUEST.post(REQUEST.url('inquireResourcesMenuList'), {"encryptType": 0, "data": {}}, function(res) {
+                var selectHtml = [];
+                selectHtml.push('<select name="menuKey">');
+                selectHtml.push('<option value="-1">--请选择--</option>');
+                if (res.resultCode == 0) {
+                    if (res.data) {
+                        selectHtml.push('<optgroup label="---------------系统业务模块---------------">');
+                        if (res.data.businessResource) {
+                            for (var index in res.data.businessResource) {
+                                selectHtml.push('<option value = "' + res.data.businessResource[index].resourcesId + '">' + res.data.businessResource[index].resourcesName + "</option>")
+                            }
+                        }
+                        selectHtml.push('</optgroup>');
+                        selectHtml.push('<optgroup label="---------------自定义图文消息---------------">');
+                        if (res.data.systemResource) {
+                            for (var index in res.data.systemResource) {
+                                selectHtml.push('<option value = "' + res.data.systemResource[index].resourcesId + '">' + res.data.systemResource[index].resourcesName + "</option>")
+                            }
+                        }
+                        selectHtml.push('</optgroup>');
+                    }
+                }
+                selectHtml.push('</select> ');
+                $menu.html(selectHtml.toString());
+            });
+
+            var $menuList = $("#menuList");
+            REQUEST.post(REQUEST.url('inquireMenuList'), {"encryptType": 0, "data": {}}, function(res) {
+                var selectHtml = [];
+                selectHtml.push('<select name="menuParent">');
+                selectHtml.push('<option value="-1">--请选择--</option>');
+                if (res.resultCode == 0) {
+                    if (res.data) {
+                        if (res.data.dataList) {
+                            for (var index in res.data.dataList) {
+                                selectHtml.push('<option value = "' + res.data.dataList[index].menuId + '">' + res.data.dataList[index].menuName + "</option>")
+                            }
+                        }
+                    }
+                }
+                selectHtml.push('</select> ');
+                $menuList.html(selectHtml.toString());
+            });
+            var $menuSetForm = $('#menuSetForm');
+            var $subBtn = $('#sub-btn');
+            var queryUrl = REQUEST.url("createMenu");
+            if (menuId) {
+                queryUrl = REQUEST.url("updateMenu");
+                REQUEST.post(REQUEST.url('inquireMenuById'), {"encryptType": 1, "data": {"menuId": menuId}}, function(res) {
+                    if (res.resultCode == 0) {
+                        FILL.fill($menuSetForm,res.data);
+                    } else {
+                        TIP.show(2, "操作失败");
+                    }
+
+                });
+            }
+            $menuSetForm.validate({
+                ignore: "",
+                submitHandler: function(form) {
+                    $subBtn.addClass('sub-ing').val("提交中...");
+                     var param ;
+                    if(menuId){
+                      param = {"encryptType": 1, "data": {"menuId" : menuId}};
+                    }else{
+                        param = {"encryptType": 1, "data": {}};
+                    }
+                    REQUEST.form(form, queryUrl, param, function(res) {
+                        if (res.resultCode == 0) {
+                            TIP.show(1, "操作成功");
+                            $subBtn.removeClass('sub-ing').val("确认提交");
+                            window.location.href = "#html/myWeixin/menuList.html";
+                        } else {
+                            TIP.show(2, "操作失败");
+                            $subBtn.removeClass('sub-ing').val("确认提交");
+                        }
+                    });
+                },
+                rules: {
+                    menuName: {required: true},
+                    menuParentId: {required: true},
+                    menuType: {required: true}
+                },
+                messages: {
+                    menuName: {required: "请输入菜单名称"},
+                    menuParentId: {required: "请选择上级菜单"},
+                    menuType: {required: "请选择菜单类型"}
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

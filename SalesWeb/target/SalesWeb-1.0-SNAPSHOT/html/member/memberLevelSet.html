@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>会员等级设置 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/member/memberList.html">会员管理</a></li>
+        <li><a href="#html/member/memberLevelList.html" class="current">会员等级设置</a></li>
+        <li><a href="#html/member/memberCardBasicSet.html">会员卡基本设置</a></li>
+        <li><a href="#html/member/memberCardList.html">会员卡</a></li>
+        <li><a href="#html/member/memberCardGetList.html">会员卡领取记录</a></li>
+        <!-- <li><a href="#html/member/customerPasswordSet.html">商家密码设置</a></li> -->
+    </ul>
+    <div class="form-box">
+        <form method="post" id="memberCardLevelForm">
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="memberCardLevel"><b>*</b>会员等级：</label>
+                </div>
+                <div class="input-box fl"><input type="text" class="normal-input" name="memberCardLevel" id="memberCardLevel"></div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl"><label class="input-item" for=""><b>*</b>会员卡背景：</label></div>
+                <div class="inner-group fl">
+                    <div class="button-box">
+                        <button type="button" class="blue-btn normal-btn" id="pic-upload">上传图片</button>
+                    </div>
+                    <div class="tip-box">大图尺寸建议：<strong>640*360px</strong></div>
+                    <div class="clearfix">
+                        <input type="hidden" name="memberCardBackgroupURL" id="memberCardBackgroupURL">
+                    </div>
+                    <div class="pic-preview-box pt10" id="upload-box">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="input-box"><b>*</b>等级最小积分：</label>
+                </div>
+                <div class="input-box fl"><input type="text" class="normal-input" name="memberCardLevelMin" id="memberCardLevelMin"></div>
+            </div>
+            <div class="form-group clearfix">
+                <div class="label-item fl">
+                    <label class="input-item" for="memberCardLevelMax"><b>*</b>等级最大积分：</label>
+                </div>
+                <div class="input-box fl"><input type="text" class="normal-input" name="memberCardLevelMax" id="memberCardLevelMax"></div>
+            </div>
+            <div class="button-box ml125 pt20">
+                <input type="submit" class="green-btn sub-btn" id="sub-btn" value="确认提交">
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'validation', 'tip', 'jump', 'search', 'formFill', 'upload'], function($, REQUEST, validate, TIP, JUMP, SEARCH, FILL, upload) {
+            var $subBtn = $("#sub-btn");
+            var $memberCardLevelForm = $("#memberCardLevelForm");
+            var param = SEARCH.get();
+            var memberCardLevelId = param.memberCardLevelId;
+            var queryUrl;
+
+            var $uploadBox = $('#upload-box');
+            var $memberCardBackgroupURL = $("#memberCardBackgroupURL");
+            $uploadBox.imageUpload({
+                btn_id: 'pic-upload',
+                max_num: 1,
+                change_callback: function(data) {
+                    var imgSrc = data.length ? data[0][0].filePath : "";
+                    $memberCardBackgroupURL.val(imgSrc);
+                }
+            });
+
+            // 获取会员等级设置详情;
+            if (memberCardLevelId) {
+                queryUrl = REQUEST.url('updateMemberCardLevel');
+                REQUEST.post(REQUEST.url('inquireMemberCardLevelById'), {"encryptType": 1, "data": {"memberCardLevelId": memberCardLevelId}}, function(res) {
+                    if (res.resultCode == 0) {
+                        var res = res.data;
+                        var memberCardBackgroupURL = res.memberCardBackgroupURL;
+                        if (memberCardBackgroupURL) {
+                            var imageArr = [[{"filePath": memberCardBackgroupURL, "type": 1}]];
+                            $uploadBox.imageUpload('renderData', imageArr);
+                        }
+                        FILL.fill($memberCardLevelForm, res);
+                    } else {
+                        TIP.show(2, "查询信息失败");
+                    }
+                });
+            } else {
+                queryUrl = REQUEST.url('insertMemberCardLevel');
+            }
+            $memberCardLevelForm.validate({
+                ignore: "",
+                submitHandler: function(form) {
+                    $subBtn.addClass('sub-ing').val("提交中...");
+                    var param = {"encryptType": 1};
+                    memberCardLevelId && (param.data = {"memberCardLevelId": memberCardLevelId});
+                    REQUEST.form(form, queryUrl, param, function(res) {
+                        if (res.resultCode == 0) {
+                            TIP.show(1, "操作成功");
+                            setTimeout((function() {
+                                JUMP.to('html/member/memberLevelList.html');
+                            }), 1000);
+                        } else {
+                            TIP.show(2, "操作失败");
+                            $subBtn.removeClass('sub-ing').val("确认提交");
+                        }
+                    });
+                },
+                rules: {
+                    memberCardLevel: {required: true},
+                    memberCardBackgroupURL: {required: true},
+                    memberCardLevelMin: {required: true},
+                    memberCardLevelMax: {required: true}
+                },
+                messages: {
+                    memberCardLevel: {required: "请输入会员等级名称"},
+                    memberCardBackgroupURL: {required: "请上传会员卡背景"},
+                    memberCardLevelMin: {required: "请输入等级最低积分"},
+                    memberCardLevelMax: {required: "请输入等级最高积分"}
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>图文消息管理 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+        <link rel="stylesheet" href="../../css/msg.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/source/imageTextList.html" class="current">图文消息管理</a></li>
+        <li><a href="#html/source/urlList.html">自定义URL</a></li>
+        <li><a href="#html/source/systemUrlList.html">系统URL查询</a></li>
+    </ul>
+    <div class="form-box clearfix">
+        <div class="msg-box fl pt15">
+            <div id="msg-box">
+                <div class="msg-cover-box" id="index-0">
+                    <input type="hidden" class="resourcesName">
+                    <input type="hidden" class="imageURL">
+                    <input type="hidden" class="resourcesURL">
+                    <input type="hidden" class="resourceContent">
+                    <div class="cover-img-box">
+                        <img class="dn" src="" alt="">
+                        <i class="default">封面图片</i>
+                    </div>
+                    <h4>
+                        <a>标题</a>
+                    </h4>
+                    <div class="msg-edit-mask">
+                        <a href="javascript:;" class="edit"></a>
+                    </div>
+                </div>
+                <div class="msg-group clearfix" id="index-1">
+                    <input type="hidden" class="resourcesName">
+                    <input type="hidden" class="imageURL">
+                    <input type="hidden" class="resourcesURL">
+                    <input type="hidden" class="resourceContent">
+                    <img class="dn" src="" alt="">
+                    <i class="default">缩略图</i>
+                    <h4><a href="javascript:;">标题</a></h4>
+                    <div class="msg-edit-mask">
+                        <a href="javascript:;" class="edit"></a>
+                        <a href="javascript:;" class="del"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="msg-opr clearfix">
+                <div class="opr-item">
+                    <a href="javascript:;" id="add-group">
+                        <i class="add"></i>
+                        增加一条
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="msg-form-box fl" id="form-box" data-id="0">
+            <i class="arrow arrow-out"></i>
+            <i class="arrow arrow-in"></i>
+            <form method="post" id="msgForm">
+                <div class="form-items">
+                    <div class="form-item">
+                        <div class="label-item">
+                            <label class="input-item" for="resourcesName"><b>*</b>标题：</label>
+                        </div>
+                        <div class="input-box clearfix">
+                            <input type="text" class="normal-input" id="resourcesName">
+                        </div>
+                    </div>
+                    <div class="form-item" style="position: relative;">
+                        <div class="label-item clearfix">
+                            <label class="input-item fl" for="imageURL"><b>*</b>封面图片：</label>
+                            <span class="fl">大图尺寸建议：<strong>640*360px</strong></span>
+                        </div>
+                        <div class="button-box">
+                            <button type="button" class="blue-btn normal-btn" id="pic-upload">上传图片</button>
+                        </div>
+                        <div class="pic-preview-box" id="upload-box">
+                        </div>
+                        <div class="clearfix">
+                            <input type="hidden" name="imageURL" id="imageURL">
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <div class="label-item">
+                            <label class="input-item" for="resourceContent"><b>*</b>简短介绍：</label>
+                        </div>
+                        <div class="textarea-box clearfix">
+                            <textarea name="resourceContent" class="normal-textarea" id="resourceContent" cols="30" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <div class="label-item">
+                            <label class="input-item" for="resourcesURL"><b>*</b>链接页面：</label>
+                        </div>
+                        <div class="select-box clearfix">
+                            <div id="menu"></div>
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <div class="clearfix">
+                            <input type="hidden" name="resources" id="resources">
+                        </div>
+                    </div>
+                </div>
+                <div class="button-box pt20">
+                    <input type="button" class="green-btn sub-btn" id="sub-btn" value="确认提交">
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'validation', 'tip', 'utils/elem/form2param.js', 'jump', 'search', 'formFill', 'upload'], function($, REQUEST, validate, TIP, formToParam, JUMP, SEARCH, FILL, upload) {
+            var action = 'insert';
+            var actionUrl = action == "insert" ? 'insertResources' : 'updateResources';
+            var $msgForm = $("#msgForm");
+            var $singleTitle = $("#singleTitle");
+            var $subBtn = $("#sub-btn");
+            var $msgBox = $("#msg-box");
+            var $formBox = $("#form-box");
+            var $uploadBox = $('#upload-box');
+            var $menu = $('#menu');
+            REQUEST.post(REQUEST.url('inquireResourcesMenuList'), {"encryptType": 0, "data": {}}, function(res) {
+                var selectHtml = [];
+                selectHtml.push('<select name="resourcesURL" id="resourcesURL">');
+                selectHtml.push('<option value="">--请选择--</option>');
+                if (res.resultCode == 0) {
+                    if (res.data) {
+                        selectHtml.push('<optgroup label="---------------系统业务模块---------------">');
+                        if (res.data.businessResource) {
+                            for (var index in res.data.businessResource) {
+                                selectHtml.push('<option value = "' + res.data.businessResource[index].resourcesId + '">' + res.data.businessResource[index].resourcesName + "</option>")
+                            }
+                        }
+                        selectHtml.push('</optgroup>');
+                        selectHtml.push('<optgroup label="---------------自定义图文消息---------------">');
+                        if (res.data.systemResource) {
+                            for (var index in res.data.systemResource) {
+                                selectHtml.push('<option value = "' + res.data.systemResource[index].resourcesId + '">' + res.data.systemResource[index].resourcesName + "</option>")
+                            }
+                        }
+                        selectHtml.push('</optgroup>');
+                    }
+                }
+                selectHtml.push('</select> ');
+                $menu.html(selectHtml.toString());
+            });
+            $uploadBox.imageUpload({
+                btn_id: 'pic-upload',
+                reset: true,
+                change_callback: function(data) {
+                    var imgSrc = data.length ? data[0][0].filePath : "",
+                            $dataGroupBox = $("#index-" + $formBox.attr("data-id"));
+                    if (imgSrc) {
+                        $dataGroupBox.find('img').attr("src", imgSrc).show().siblings('i').hide();
+                        $dataGroupBox.children('.imageURL').val(imgSrc);
+                    } else {
+                        $dataGroupBox.find('img').attr("src", "").hide().siblings('i').show();
+                        $dataGroupBox.children('.imageURL').val("");
+                    }
+                }
+            });
+
+            $msgBox.on("mouseover", ".msg-cover-box, .msg-group", function() {
+                $(this).children('.msg-edit-mask').show();
+            }).on("mouseleave", ".msg-cover-box, .msg-group", function() {
+                $(this).children('.msg-edit-mask').hide();
+            }).on("click", ".edit", function() {
+                var $parentsBox = $(this).parent().parent();
+                var posTop = $parentsBox.position().top;
+                $formBox.css('top', posTop - 15).attr('data-id', $parentsBox.index());
+                $formBox.find("#resourcesName").val($parentsBox.children('.resourcesName').val());
+                selectOpt($parentsBox.children('.resourcesURL').val());
+            }).on("click", ".del", function() {
+                var $parentsGroup = $(this).parent().parent();
+                if ($msgBox.children().length > 2) {
+                    $(this).parent().parent().remove();
+                    $formBox.css('top', 0).attr('data-id', '0');
+                }
+            });
+            $("#add-group").on("click", function() {
+                var htmlArr = [];
+                htmlArr.push('<div class="msg-group clearfix" id="index-' + $msgBox.children().length + '">');
+                htmlArr.push('<input type="hidden" class="resourcesName">');
+                htmlArr.push('<input type="hidden" class="imageURL">');
+                htmlArr.push('<input type="hidden" class="resourcesURL">');
+                htmlArr.push('<input type="hidden" class="resourceContent">');
+                htmlArr.push('<img class="dn" src="">');
+                htmlArr.push('<i class="default">缩略图</i>');
+                htmlArr.push('<h4><a href="javascript:;">标题</a></h4>');
+                htmlArr.push('<div class="msg-edit-mask"><a href="javascript:;" class="edit"></a><a href="javascript:;" class="del"></a></div></div>');
+                $msgBox.append(htmlArr.join(""));
+            });
+            $("#resourcesName").on("change", function() {
+                var $dataGroupBox = $("#index-" + $formBox.attr("data-id"));
+                var val = this.value;
+                $dataGroupBox.children('.resourcesName').val(val);
+                $dataGroupBox.children('h4').html('<a href="javascript:;">' + val + '</a>');
+            });
+
+            var $resourcesURL = $("#resourcesURL");
+            $resourcesURL.on("change", function() {
+                var $dataGroupBox = $("#index-" + $formBox.attr("data-id"));
+                $dataGroupBox.children('.resourcesURL').val(this.value);
+            });
+
+            var $resourceContent = $("#resourceContent");
+            $resourceContent.on("change", function() {
+                var $dataGroupBox = $("#index-" + $formBox.attr("data-id"));
+                $dataGroupBox.children('.resourceContent').val(this.value);
+            });
+
+            function selectOpt(val) {
+                var opts = $resourcesURL.children("option");
+                var opt;
+                for (var i = opts.length; i--; ) {
+                    opt = opts[i];
+                    if (val == opt.value) {
+                        $(opt).attr("selected", "selected");
+                    }
+                }
+            }
+            $subBtn.on("click", function() {
+                var childrens = $msgBox.children();
+                var arr = [];
+                var $child;
+                var obj = {};
+                for (var i = 0, len = childrens.length; i < len; i++) {
+                    $child = $(childrens[i]);
+                    var resourcesName = $child.children('.resourcesName').val();
+                    var imageURL = $child.children('.imageURL').val();
+                    var resourcesURL = $child.children('.resourcesURL').val();
+                    var resourcesContent = $child.children('.resourceContent').val();
+                    if (resourcesName) {
+                        var param = {'resourcesName': resourcesName, 'imageURL': imageURL, 'resourcesURL': resourcesURL, 'resourcesType': "1", 'resourceContent': resourcesContent};
+                        arr.push(param);
+                    } else {
+                        break;
+                    }
+                }
+                $("#resources").val(JSON.stringify(arr));
+                $msgForm.trigger('submit');
+            });
+            $msgForm.validate({
+                ignore: "",
+                submitHandler: function(form) {
+
+                    $subBtn.addClass('sub-ing').val("提交中...");
+                    REQUEST.form(form, REQUEST.url(actionUrl), {"encryptType": 1}, function(res) {
+                        if (res.resultCode == 0) {
+                            TIP.show(1, "操作成功");
+                            setTimeout((function() {
+                                JUMP.to('html/source/imageTextList.html');
+                            }), 1000);
+                        } else {
+                            TIP.show(2, "操作失败");
+                            $subBtn.removeClass('sub-ing').val("确认提交");
+                        }
+                    });
+                },
+                rules: {
+                    resources: {required: true},
+                },
+                messages: {
+                    resources: {required: "请输入完整的图文内容"}
+                }
+            });
+        });
+    </script>
+</body>
+</html>

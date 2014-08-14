@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>刮刮卡管理 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/activity/scratchCardBasicSet.html">刮刮卡基本设置</a></li>
+        <li><a href="#html/activity/scratchCardList.html" class="current">刮刮卡管理</a></li>
+    </ul>
+    <div class="button-box ml10 mb10 pt20">
+        <a href="#html/activity/scratchCardSet.html" class="blue-btn normal-btn">添加刮刮卡</a>
+        <span class="ml10"><strong>注意：</strong>刮刮乐总配额为10个，如活动配额满请删除已结束活动</span>
+    </div>
+    <!-- 表格 -->
+    <div class="table-box">
+        <table>
+            <thead>
+            <th class="w100">活动ID</th>
+            <th class="w150">关键词</th>
+            <th>活动名称</th>
+            <th class="w200">活动时间</th>
+            <th class="w100">活动状态</th>
+            <th class="w200">操作</th>
+            </thead>
+            <tbody id="table-list">
+            </tbody>
+        </table>
+    </div>
+    <!-- 分页 -->
+    <div class="page-box" id="page-box"></div>
+    <!-- 模板 -->
+    <script id="eventListTemplate" type="text/html">
+        <% var microEvent, eventId, status; %>
+        <% for ( i = 0, len = dataList.length; i < len; i++ ) { microEvent = dataList[i]; eventId = microEvent.eventId; status = microEvent.status; %>
+        <tr>
+        <td><%=eventId%></td>
+        <td><%=microEvent.keyword%></td>
+        <td><strong><%=microEvent.eventName%></strong></td>
+        <td><span><%=microEvent.eventEffectiveStartTime%></span><br>至<br><span><%=microEvent.eventEffectiveEndTime%></span></td>
+        <td class="status">
+        <% if ( status== 0) { %>
+        <strong>暂停</strong>
+        <% } else { %>
+        <span>正常</span>
+        <% } %>
+        </td>
+        <td>
+        <a href="#html/activity/scratchCardSet.html?eventId=<%=eventId%>">编辑</a>
+        <a href="#html/activity/eventAwardSet.html?jumpUrl=scratchCardList&eventId=<%=eventId%>">设置</a>
+        <a href="javascript:;" class="opt" data-id="<%=eventId%>"><% if ( status== 0) { %>开启<% } else { %>暂停<% } %></a>
+        <a href="javascript:;" class="opt" data-id="<%=eventId%>">删除</a>
+        </td>
+        </tr>
+        <% }%>
+    </script>
+
+    <script>
+        seajs.use(['jquery', 'request', 'template', 'pager', 'tip'], function($, REQUEST, template, pager, TIP) {
+            var $pageBox = $('#page-box');
+            var $tableList = $("#table-list");
+            var queryUrl = REQUEST.url("inquireEventList");
+            $pageBox.pager({
+                form: "",
+                url: queryUrl,
+                param: {"data": {"pageNo": 1, "pageCount": 10, "type": 1}, "encryptType": 1},
+                callback: function(res) {
+                    if (res.resultCode == 0) {
+                        res = res.data;
+                        res.dataList && $tableList.html(template.render('eventListTemplate', res));
+                    } else {
+                        TIP.show(2, "查询失败");
+                    }
+                }
+            });
+            $tableList.on("click", ".opt", function() {
+                var $this = $(this);
+                var optName = $this.text();
+                var optUrl;
+                var $parentTd = $this.parent();
+                var param = {"encryptType": 1, "data": {"eventId": $this.attr("data-id")}};
+                switch (optName) {
+                    case "删除":
+                        optUrl = REQUEST.url("deleteEvent");
+                        param.encryptType = 0;
+                        break;
+                    case "暂停":
+                        optUrl = REQUEST.url("pauseEvent");
+                        break;
+                    case "开启":
+                        optUrl = REQUEST.url("startEvent");
+                        break;
+                }
+                REQUEST.post(optUrl, param, function(res) {
+                    if (res.resultCode == 0) {
+                        TIP.show(1, "操作成功");
+                        switch (optName) {
+                            case "删除":
+                                $parentTd.parent().remove();
+                                break;
+                            case "暂停":
+                                $this.text("开启");
+                                $parentTd.siblings('.status').html("<strong>暂停</strong>");
+                                break;
+                            case "开启":
+                                $this.text("暂停");
+                                $parentTd.siblings('.status').html("<span>正常</span>");
+                                break;
+                        }
+                    } else {
+                        TIP.show(2, "操作失败");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

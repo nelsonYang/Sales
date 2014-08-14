@@ -1,0 +1,268 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>会员卡基本设置 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/member/memberList.html">会员管理</a></li>
+        <li><a href="#html/member/memberLevelList.html">会员等级设置</a></li>
+        <li><a href="#html/member/memberCardBasicSet.html" class="current">会员卡基本设置</a></li>
+        <li><a href="#html/member/memberCardList.html">会员卡</a></li>
+        <li><a href="#html/member/memberCardGetList.html">会员卡领取记录</a></li>
+        <!-- <li><a href="#html/member/customerPasswordSet.html">商家密码设置</a></li> -->
+    </ul>
+    <div class="form-box">
+        <form method="post" id="memberCardBasicSetForm">
+            <div class="clearfix">
+                <div class="left-form-item fl">
+                    <div class="form-item">
+                        <div class="label-item">
+                            <label class="input-item" for="merchantName"><b>*</b>商家名称：</label>
+                        </div>
+                        <div class="input-box clearfix">
+                            <input type="text" class="normal-input" name="merchantName" id="merchantName">
+                        </div>   
+                    </div>
+                    <div class="form-item">
+                        <div class="label-item">
+                            <label class="input-item" for="telephone"><b>*</b>商家联系电话：</label>
+                        </div>
+                        <div class="input-box"><input type="text" class="normal-input" name="telephone" id="telephone"></div>
+                    </div>
+                </div>
+                <div class="right-form-item fl">
+                    <div class="form-item">
+                        <div class="label-item">
+                            <label class="input-item" for="integerationPerSign"><b>*</b>会员每天签到可获得积分：</label>
+                            <!-- <label for="ss"><input type="checkbox" name="isExperienceOpen" id="isExperienceOpen">启用</label> -->
+                        </div>
+                        <div class="input-box clearfix">
+                            <input type="text" class="normal-input" name="integerationPerSign" id="integerationPerSign">
+                            <span class="tip-line fl ml5">分</span>
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <div class="label-item">
+                            <label class="input-item" for="merchantAddress"><b>*</b>商家详细地址：</label>
+                        </div>
+                        <div class="input-box clearfix">
+                            <input type="text" class="normal-input" name="merchantAddress" id="merchantAddress">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h3 class="mt20">会员卡样式</h3>
+            <div class="form-items clearfix">
+                <div class="left-form-item fl">
+                    <div class="form-item">
+                        <div class="label-item">
+                            <label class="input-item" for="memberCardName"><b>*</b>会员卡名称：</label>
+                        </div>
+                        <div class="input-box clearfix">
+                            <input type="text" class="normal-input" name="memberCardName" id="memberCardName">
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <div class="label-item">
+                            <label class="input-item" for="merchantLogo"><b>*</b>商家LOGO上传（<strong>请上传png透明格式</strong>）：</label>
+                            <div class="tip-box">(大图尺寸建议：<strong>200*200px</strong>)</div>
+                        </div>
+                        <div class="button-box">
+                            <button type="button" class="blue-btn normal-btn" id="pic-upload-logo">上传图片</button>
+                        </div>
+                        <div class="clearfix">
+                            <input type="hidden" name="merchantLogo" id="merchantLogo">
+                        </div>
+                        <div class="pic-preview-box pt10" id="upload-box-logo">
+                        </div>
+                    </div>
+                </div>
+                <div class="right-form-item fl">
+                    <div class="form-item clearfix">
+                        <div class="label-item">
+                            <label class="input-item" for="memberCardBackgroupURL">自定义会员卡背景：</label>
+                            <!-- <label for="ss"><input type="checkbox" name="" id="ss">启用</label> -->
+                        </div>
+                        <div class="button-box">
+                            <button type="button" class="blue-btn normal-btn" id="pic-upload-card">上传图片</button>
+                        </div>
+                        <div class="clearfix">
+                            <input type="hidden" name="memberCardBackgroupURL" id="memberCardBackgroupURL">
+                        </div>
+                        <div class="pic-preview-box pt10" id="upload-box-card">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <h3 class="mt20">触发信息设置</h3>
+            <div class="form-items clearfix">
+                <div class="left-form-item fl">
+                    <div class="form-item">
+                        <div class="label-item">
+                            <label class="input-item" for="keyword"><b>*</b>触发关键词：</label>
+                            <span class="tip-line">(有多个关键词请用空格隔开)</span>
+                        </div>
+                        <div class="input-box clearfix">
+                            <input type="text" class="normal-input" name="keyword" id="keyword">
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <div class="label-item">
+                            <label class="input-item" for="matchType"><b>*</b>匹配模式：</label>
+                        </div>
+                        <div class="inner-item">
+                            <div class="radio-box">
+                                <input type="radio" name="matchType" id="matchType-1" value="1" checked="checked"><label for="matchType-1">精确匹配</label><span class="tip-line">(输入的文字和此关键词一样才触发)</span>
+                            </div>
+                            <div class="radio-box">
+                                <input type="radio" name="matchType" id="matchType-2" value="2"><label for="matchType-2">模糊匹配</label><span class="tip-line">(输入的文字包含此关键词就触发)</span>
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="form-item">
+                        <div class="label-item">
+                            <label class="input-item" for="title"><b>*</b> 图文消息标题：</label>
+                        </div>
+                        <div class="input-box clearfix">
+                            <input type="text" class="normal-input" name="title" id="title">
+                        </div>
+                    </div>
+                </div>
+                <div class="right-form-item fl">
+                    <div class="form-item clearfix">
+                        <div class="label-item">
+                            <label class="input-item" for="messageImageURL"><b>*</b>图文消息封面：</label>
+                            <span class="tip-line">(大图尺寸建议：<strong>640*360px</strong>)</span>
+                        </div>
+                        <div class="button-box">
+                            <button type="button" class="blue-btn normal-btn" id="pic-upload-msg">上传图片</button>
+                        </div>
+                        <div class="clearfix">
+                            <input type="hidden" name="messageImageURL" id="messageImageURL">
+                        </div>
+                        <div class="pic-preview-box pt10" id="upload-box-msg">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="button-box pt20">
+                <input type="submit" class="green-btn sub-btn" id="sub-btn" value="确认提交">
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'validation', 'tip', 'formFill', 'upload'], function($, REQUEST, validate, TIP, FILL, upload) {
+            var $memberCardBasicSetForm = $("#memberCardBasicSetForm");
+            var $subBtn = $("#sub-btn");
+            var memberCardConfigId;
+
+            var $uploadBoxLogo = $('#upload-box-logo');
+            var $merchantLogo = $("#merchantLogo");
+            $uploadBoxLogo.imageUpload({
+                btn_id: 'pic-upload-logo',
+                max_num: 1,
+                change_callback: function(data) {
+                    var imgSrc = data.length ? data[0][0].filePath : "";
+                    $merchantLogo.val(imgSrc);
+                }
+            });
+
+            var $uploadBoxCard = $('#upload-box-card');
+            var $memberCardBackgroupURL = $("#memberCardBackgroupURL");
+            $uploadBoxCard.imageUpload({
+                btn_id: 'pic-upload-card',
+                max_num: 1,
+                change_callback: function(data) {
+                    var imgSrc = data.length ? data[0][0].filePath : "";
+                    $memberCardBackgroupURL.val(imgSrc);
+                }
+            });
+
+            var $uploadBoxMsg = $('#upload-box-msg');
+            var $messageImageURL = $("#messageImageURL");
+            $uploadBoxMsg.imageUpload({
+                btn_id: 'pic-upload-msg',
+                max_num: 1,
+                change_callback: function(data) {
+                    var imgSrc = data.length ? data[0][0].filePath : "";
+                    $messageImageURL.val(imgSrc);
+                }
+            });
+
+            // 获取会员卡设置详情;
+            REQUEST.post(REQUEST.url('inquireMemberCardConfigList'), {"encryptType": 0, "data": {"responseContentType": 7}}, function(res) {
+                if (res.resultCode == 0) {
+                    var res = res.data;
+                    memberCardConfigId = res.memberCardConfigId;
+                    var merchantLogo = res.merchantLogo;
+                    if (merchantLogo) {
+                        var imageArr = [[{"filePath": merchantLogo, "type": 1}]];
+                        $uploadBoxLogo.imageUpload('renderData', imageArr);
+                    }
+                    var memberCardBackgroupURL = res.memberCardBackgroupURL;
+                    if (memberCardBackgroupURL) {
+                        var imageArr = [[{"filePath": memberCardBackgroupURL, "type": 1}]];
+                        $uploadBoxCard.imageUpload('renderData', imageArr);
+                    }
+                    var messageImageURL = res.messageImageURL;
+                    if (messageImageURL) {
+                        var imageArr = [[{"filePath": messageImageURL, "type": 1}]];
+                        $uploadBoxMsg.imageUpload('renderData', imageArr);
+                    }
+                    FILL.fill($memberCardBasicSetForm, res);
+                } else {
+                    TIP.show(2, "查询信息失败");
+                }
+            });
+            $memberCardBasicSetForm.validate({
+                ignore: "",
+                submitHandler: function(form) {
+                    $subBtn.addClass('sub-ing').val("提交中...");
+                    var param = {"encryptType": 1, "data": {"responseContentType": 7}};
+                    memberCardConfigId && (param.data.memberCardConfigId = memberCardConfigId);
+                    REQUEST.form(form, REQUEST.url('insertMemberCardConfig'), param, function(res) {
+                        $subBtn.removeClass('sub-ing').val("确认提交");
+                        if (res.resultCode == 0) {
+                            TIP.show(1, "操作成功");
+                        } else {
+                            TIP.show(2, "操作失败");
+                        }
+                    });
+                },
+                rules: {
+                    merchantName: {required: true},
+                    integerationPerSign: {required: true},
+                    telephone: {required: true},
+                    merchantAddress: {required: true},
+                    memberCardName: {required: true},
+                    merchantLogo: {required: true},
+                    memberCardBackgroupURL: {required: true},
+                    keyword: {required: true},
+                    matchType: {required: true},
+                    title: {required: true},
+                    messageImageURL: {required: true}
+                },
+                messages: {
+                    merchantName: {required: "请输入商家名称"},
+                    integerationPerSign: {required: "请输入签到积分"},
+                    telephone: {required: "请输入联系电话"},
+                    merchantAddress: {required: "请输入联系地址"},
+                    memberCardName: {required: "请输入会员卡名称"},
+                    merchantLogo: {required: "请上传商家LOGO"},
+                    memberCardBackgroupURL: {required: "请上传会员卡背景"},
+                    keyword: {required: "请输入关键词"},
+                    matchType: {required: "请选择匹配模式"},
+                    title: {required: "请输入消息标题"},
+                    messageImageURL: {required: "请上传消息图片"}
+                }
+            });
+        });
+    </script>
+</body>
+</html>

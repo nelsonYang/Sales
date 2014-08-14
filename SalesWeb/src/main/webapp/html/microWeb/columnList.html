@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>栏目管理 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/microWeb/basicSet.html">基本设置</a></li>
+        <li><a href="#html/microWeb/skinSet.html">风格设置</a></li>
+        <li><a href="#html/microWeb/homePageSet.html">首页设置</a></li>
+        <li><a href="#html/microWeb/columnList.html" class="current">栏目管理</a></li>
+    </ul>
+    <div class="button-box ml10 mb10 pt20">
+        <a href="#html/microWeb/columnSet.html" class="blue-btn normal-btn">添加栏目</a>  
+        <!-- <a href="javascript:;" class="red-btn normal-btn ml20">添加页面</a>  -->
+    </div>
+    <!-- 表格 -->
+    <div class="table-box">
+        <table>
+            <thead>
+            <th class="w150">栏目ID</th>
+            <th>栏目名称</th>
+            <!-- <th class="w200">渠道类型</th> -->
+            <!-- <th class="w150">渠道信息</th> -->
+            <!-- <th class="w200">下载二维码</th> -->
+            <th class="w150">操作</th>
+            </thead>
+            <tbody id="table-list">
+            </tbody>
+        </table>
+    </div>
+
+    <script id="columnListTemplate" type="text/html">
+        <% var column, columnId; %>
+        <% for ( i = 0, len = menuList.length; i < len; i++ ) { column = menuList[i]; columnId = column.weiSiteMenuId; %>
+        <tr>
+        <td><%=columnId%></td>
+        <td><%=column.weiSiteMenuName%></td>
+        <td>
+        <a href="#html/microWeb/columnSet.html?weiSiteMenuId=<%=columnId%>">详情</a>
+        <a href="javascript:;" data-id="<%=columnId%>" class="opt">删除</a>
+        </td>
+        </tr>
+        <% }%>
+    </script>
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'template', 'tip'], function($, REQUEST, template, TIP) {
+            // var $pageBox = $("#page-box");
+            var $tableList = $("#table-list");
+            REQUEST.post(REQUEST.url("inquireWeiSiteMenuList"), {}, function(res) {
+                if (res.resultCode == 0) {
+                    res = res.data;
+                    var html = template.render('columnListTemplate', res);
+                    $tableList.html(html);
+                } else {
+
+                }
+            });
+            var deleteUrl = REQUEST.url('deleteWeiSiteMenu');
+            $tableList.on("click", ".opt", function() {
+                var $this = $(this);
+                REQUEST.post(deleteUrl, {"encryptType": 1, "data": {"weiSiteMenuId": $this.attr("data-id")}}, function(res) {
+                    if (res.resultCode == 0) {
+                        TIP.show(1, "操作成功");
+                    } else {
+                        TIP.show(2, "操作失败");
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>

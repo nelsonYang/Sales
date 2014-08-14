@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../../js/mobile/jquery.mobile-1.3.2.min.css">
+        <script src="../../js/mobile/jquery-1.8.3.min.js"></script>
+        <script src="../../js/mobile/jquery.mobile-1.3.2.min.js"></script>
+        <script src="../../js/sea.js" id="seajsnode"></script>
+        <script src="../../js/seajs-config.js"></script>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <!-- "weiBarTitle", "weiBarContent", "memberId", "parentId", "memberNo", "memberName"-->
+    <body>
+        <div data-role="page">
+            <div data-role="header">
+                <h1>微吧留言</h1>
+            </div>
+            <div data-role="content">
+                <div class="table-box">
+                    <table>
+                        <thead>
+                        <th class="w50" >序号</th>
+                        <th class="w150">标题</th>
+                        <th class="w100">内容</th>
+                        <th class="w100">发布人ID</th>
+                        <th class="w150">时间</th>
+                        </thead>
+                        <tbody id="table-list">
+                        </tbody>
+                    </table>
+                    <div class="page-box" id="page-box"></div>
+                </div>
+            </div>
+            <div data-role="footer">
+                      <h4>版权所有微cool工作室</h4>
+            </div>
+        </div>
+        <!-- 模板 -->
+        <script id="weiBarListTemplate" type="text/html">
+                    <% var weiBar, weiBarId; %>
+                    <% for ( i = 0, len = dataList.length; i < len; i++ ) { weiBar = dataList[i]; weiBarId = weiBar.weiBarId; %>
+                    <tr>
+                    <td><%=weiBarId%></td>
+                    <td><%=weiBar.weiBarTitle%></td>
+                    <td><%=weiBar.weiBarContent%></td>
+                    <td><%=weiBar.memberId%></td>
+                    <td><%=weiBar.createTime%></td>
+                    </tr>
+                    <% }%>
+        </script>
+        <script type="text/javascript">
+seajs.use(['jquery', 'request', 'template', 'pager', 'tip', 'search', 'storage', 'static'], function($, REQUEST, TEMPLATE, PAGER, TIP, SEARCH, STORAGE, STATIC) {
+var $pageBox = $('#page-box');
+var param = SEARCH.getParam(location.search);
+var token = param.token;
+if (!token) {
+    token = STORAGE.get(STATIC.COMPANY_TOKEN);
+    if(token){
+        STORAGE.set(STATIC.COMPANY_TOKEN,token);
+    }
+}
+var $tableList = $("#table-list");
+var queryUrl = REQUEST.url("inquirePageWeiBarListByToken");
+// $queryMemberList.on("submit", function(){
+$pageBox.pager({
+    form: "",
+    url: queryUrl,
+    param: {"data": {"pageNo": 1, "pageCount": 10, "token": token}, "encryptType": 2},
+    callback: function(res) {
+        if (res.resultCode == 0) {
+            res = res.data;
+            res.dataList && $tableList.html(template.render('weiBarListTemplate', res));
+        } else {
+            TIP.show(2, "查询失败");
+        }
+    }
+});
+});
+
+        </script>
+    </body>
+</html>

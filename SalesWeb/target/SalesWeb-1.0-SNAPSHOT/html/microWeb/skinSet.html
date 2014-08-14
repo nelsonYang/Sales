@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>风格设置 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+        <style type="text/css">
+            .skin-box {
+                padding: 20px 10px 0;
+                overflow: hidden;
+            }
+
+            .skin-box ul {
+                margin-right: -50px;
+            }
+
+            .skin-box ul li {
+                float: left;
+                width: 204px;
+                height: 386px;
+                margin-right: 50px;
+                margin-bottom: 50px;
+                cursor: pointer;
+            }
+
+            .skin-box .skin-img-box {
+                position: relative;
+                width: 200px;
+                height: 340px;
+                border: 2px solid #f2f2f2;
+            }
+
+            .skin-box .skin-img-box i {
+                display: none;
+                position: absolute;
+                bottom: -1px;
+                right: -1px;
+                width: 38px;
+                height: 38px;
+                background: url(../../images/selected-bg.png) no-repeat;
+            }
+
+            .skin-box .skin-img-box img {
+                display: block;
+                width: 200px;
+                height: 340px;
+            }
+
+            .skin-box .skin-title {
+                width: 204px;
+                height: 36px;
+                margin-top: 8px;
+                line-height: 36px;
+                text-align: center;
+                font-size: 14px;
+                background: #f8f8f8;
+            }
+
+            .skin-box .skin-selected .skin-img-box {
+                border-color: #5cb85c;
+            }
+
+            .skin-box .skin-selected .skin-img-box i {
+                display: block;
+            }
+
+
+            .skin-box .skin-selected .skin-title {
+                background: #5cb85c;
+                color: #fff;
+            }
+        </style>
+    </head>
+    <body>
+        <ul class="form-tab clearfix">
+            <li><a href="#html/microWeb/basicSet.html">基本设置</a></li>
+            <li><a href="#html/microWeb/skinSet.html" class="current">风格设置</a></li>
+            <li><a href="#html/microWeb/homePageSet.html">首页设置</a></li>
+            <li><a href="#html/microWeb/columnList.html">栏目管理</a></li>
+        </ul>
+        <div class="skin-box" id="skin-box">
+            <div id="table-list"/>
+        </div>
+        <div class="page-box" id="page-box"></div>
+        <script id="skinListTemplate" type="text/html">
+            <% var template, weiSiteSytleTemplateId; %>
+            <% for ( i = 0, len = dataList.length; i < len; i++ ) { template = dataList[i]; weiSiteSytleTemplateId =
+            template.weiSiteSytleTemplateId; %>
+            <% if( i % 4 == 0) {%>
+            <ul>
+            <%}%>
+           
+            <% if(template.checked == 0){ %>
+               <li id=<%=template.weiSiteSytleTemplateId%>>  
+            <div class="skin-img-box">
+              <i></i>
+            <img src="<%=template.weiSiteSytleTemplateImageURL%>" alt="">
+            </div>
+            <div class="skin-title"><%= template.weiSiteSytleTemplateName%></div>
+            </li>
+            <%}else{ %>
+             <li id=<%=template.weiSiteSytleTemplateId%> class="skin-selected">  
+            <div class="skin-img-box">
+            <i></i>
+            <img src="<%=template.weiSiteSytleTemplateImageURL%>" alt="">
+            </div>
+            <div class="skin-title"><%= template.weiSiteSytleTemplateName%></div>
+             </li>
+            <%} %>
+          
+            <% if( i % 4 == 0) {%>
+            </ul>
+            <%}%>
+            <% }%>
+        </script>
+        <script type="text/javascript">
+            seajs.use(['jquery', 'request', 'template', 'pager', 'tip'], function($, REQUEST, template, pager, TIP) {
+                var $pageBox = $('#page-box');
+                var $tableList = $("#table-list");
+                var queryUrl = REQUEST.url("inquirePageWeiSiteSytleTemplateConfigList");
+                $pageBox.pager({
+                    form: "",
+                    url: queryUrl,
+                    param: {"data": {"pageNo": 1, "pageCount": 10}, "encryptType": 1},
+                    callback: function(res) {
+                        if (res.resultCode == 0) {
+                            res = res.data;
+                            res.dataList && $tableList.html(template.render('skinListTemplate', res));
+                        } else {
+                            TIP.show(2, "查询失败");
+                        }
+                    }
+                });
+                $("#skin-box").on("click", "li", function() {
+                    var templateId = $(this).attr('id');
+                    var insertUrl = REQUEST.url("insertWeiSiteStyleTemplate");
+                    REQUEST.post(insertUrl, {"data": {"weiSiteStyleTemplateCfgId": templateId}, "encryptType": 1}, function(res) {
+                        if (res.resultCode == 0) {
+                            $(this).addClass('skin-selected').siblings().removeClass('skin-selected');
+                            TIP.show(1, "操作成功");
+                        } else {
+                            TIP.show(2, "操作失败");
+                        }
+                    });
+
+                });
+
+            });
+        </script>
+    </body>
+</html>

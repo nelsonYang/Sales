@@ -1,0 +1,236 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>优惠券管理 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+        <style type="text/css">
+            .award-box { position: relative; border: 1px solid #c0c0c0; background: #f8f8f8; }
+            .award-box .delete-award { position: absolute; right: 10px; top: 8px; height: 16px; width: 16px; background: url(images/delete.png) no-repeat; cursor: pointer; }
+            .award-box h3 { height: 34px; padding-left: 10px; margin-bottom: 10px; border-bottom: 1px solid #c0c0c0; color: #333; line-height: 32px; background: #eee; font-size: 14px; }
+            .award-box .form-group { padding-left: 15px; padding-right: 15px; margin-bottom: 10px; }
+            .award-box .form-group .input-item { width: auto; font-size: 12px; font-weight: normal; }
+            .award-box .form-group .input-item b { width: 10px; overflow: hidden; font-size: 12px; }
+        </style>
+    </head>
+    <body>
+        <ul class="form-tab clearfix" id="event-ul">
+        </ul>
+        <div class="form-box">
+            <form method="post" id="eventAwardInfoForm">
+                <div class="form-group clearfix">
+                    <div class="label-item fl">
+                        <label class="input-item" for="eventName">活动名称：</label>
+                    </div>
+                    <div class="text-box fl" style="margin-left: 0">
+                        <strong id="eventName"></strong>
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <div class="label-item fl">
+                        <label class="input-item" for="eventEffectiveTime">活动时间：</label>
+                    </div>
+                    <div class="text-box fl" style="margin-left: 0" id="eventEffectiveTime">
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <div class="label-item fl">
+                        <label class="input-item" for="eventEffectiveTime">奖项设置：</label>
+                    </div>
+                    <div class="inner-group fl">
+                        <div id="award-box">
+                            <div class="award-box">
+                                <h3>请填写奖项信息</h3>
+                                <div class="form-group clearfix">
+                                    <div class="label-item fl">
+                                        <label class="input-item" for="awardName"><b>*</b>活动奖项名称：</label>
+                                    </div>
+                                    <div class="input-box fl"><input type="text" class="small-input" data-name="awardName"></div>
+                                    <div class="label-item fl ml15">
+                                        <label class="input-item" for="awardNum"><b>*</b>活动奖品数量：</label>
+                                    </div>
+                                    <div class="input-box fl"><input type="text" class="small-input" data-name="awardNum"></div>
+                                </div>
+                                <div class="form-group clearfix">
+                                    <div class="label-item fl">
+                                        <label class="input-item" for="awardNumPerPerson"><b>*</b>每人参与次数：</label>
+                                    </div>
+                                    <div class="input-box fl"><input type="text" class="small-input" data-name="awardNumPerPerson"></div>
+                                    <div class="label-item fl ml15">
+                                        <label class="input-item" for="awardNumPerPerson"><b>*</b>活动奖项描述：</label>
+                                    </div>
+                                    <div class="textarea-box fl"><textarea data-name="awardDesc" class="small-textarea" row="2"></textarea></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix">
+                            <input type="hidden" name="awards" id="awards">
+                        </div>
+                        <div class="button-box mt10"><a href="javascript:;" class="blue-btn" id="add-award">+添加新的奖项</a></div>
+                    </div>
+                </div>
+                <div class="button-box ml125 pt20">
+                    <input type="button" class="green-btn sub-btn" id="sub-btn" value="确认提交">
+                </div>
+            </form>
+        </div>
+        <script id="awardTemplate" type="text/html">
+            <div class="award-box mt10">
+            <i class="delete-award"></i>
+            <h3>请填写奖项信息</h3>
+            <div class="form-group clearfix">
+            <div class="label-item fl">
+            <label class="input-item" for="awardName"><b>*</b>活动奖项名称：</label>
+            </div>
+            <div class="input-box fl"><input type="text" class="small-input" data-name="awardName"></div>
+            <div class="label-item fl ml15">
+            <label class="input-item" for="awardNum"><b>*</b>活动奖品数量：</label>
+            </div>
+            <div class="input-box fl"><input type="text" class="small-input" data-name="awardNum"></div>
+            </div>
+            <div class="form-group clearfix">
+            <div class="label-item fl">
+            <label class="input-item" for="awardNumPerPerson"><b>*</b>每人参与次数：</label>
+            </div>
+            <div class="input-box fl"><input type="text" class="small-input" data-name="awardNumPerPerson"></div>
+            <div class="label-item fl ml15">
+            <label class="input-item" for="awardNumPerPerson"><b>*</b>活动奖项描述：</label>
+            </div>
+            <div class="textarea-box fl"><textarea data-name="awardDesc" class="small-textarea" row="3"></textarea></div>
+            </div>
+            </div>
+        </script>
+        <script id="awardListTemplate" type="text/html">
+            <% var award; %>
+            <% for ( i = 0, len = awards.length; i < len; i++ ) { award = awards[i]; %>
+            <% if(i>0){ %>
+            <div class="award-box mt10">
+            <% } else { %>
+            <div class="award-box">
+            <% } %>
+            <% if(i>0){ %>
+            <i class="delete-award"></i>
+            <% } %>
+            <h3>请填写奖项信息</h3>
+            <div class="form-group clearfix">
+            <div class="label-item fl">
+            <label class="input-item" for="awardName"><b>*</b>活动奖项名称：</label>
+            </div>
+            <div class="input-box fl"><input type="text" class="small-input" data-name="awardName" value="<%=award.awardName%>"></div>
+            <div class="label-item fl ml15">
+            <label class="input-item" for="awardNum"><b>*</b>活动奖品数量：</label>
+            </div>
+            <div class="input-box fl"><input type="text" class="small-input" data-name="awardNum" value="<%=award.awardNum%>"></div>
+            </div>
+            <div class="form-group clearfix">
+            <div class="label-item fl">
+            <label class="input-item" for="awardNumPerPerson"><b>*</b>每人参与次数：</label>
+            </div>
+            <div class="input-box fl"><input type="text" class="small-input" data-name="awardNumPerPerson" value="<%=award.awardNumPerPerson%>"></div>
+            <div class="label-item fl ml15">
+            <label class="input-item" for="awardNumPerPerson"><b>*</b>每活动奖项描述：</label>
+            </div>
+            <div class="textarea-box fl"><textarea data-name="awardDesc" class="small-textarea" row="3"><%=award.awardDesc%></textarea></div>
+            </div>
+            </div>
+            <% }%>
+        </script>
+
+        <script type="text/javascript">
+            seajs.use(['jquery', 'request', 'validation', 'tip', 'jump', 'search', 'formFill', 'datePicker', 'template'], function($, REQUEST, validate, TIP, JUMP, SEARCH, FILL, datePicker, template) {
+                var $subBtn = $("#sub-btn");
+                var $eventAwardInfoForm = $("#eventAwardInfoForm");
+                var param = SEARCH.get();
+                var eventId = param.eventId;
+                var jumpUrl = param.jumpUrl;
+                var queryUrl;
+                var $eventUl = $("#event-ul");
+                switch (jumpUrl) {
+                    case "scratchCardList":
+                        $eventUl.html('<li><a href="#html/activity/scratchCardBasicSet.html">刮刮卡基本设置</a></li><li><a href="#html/activity/scratchCardList.html" class="current">刮刮卡管理</a></li>');
+                        break;
+                    case "fruitList":
+                        $eventUl.html('<li><a href="#html/activity/fruitBasicSet.html">水果达人基本设置</a></li><li><a href="#html/activity/fruitList.html" class="current">水果达人管理</a></li>');
+                        break;
+                    case "turntableList":
+                        $eventUl.html('<li><a href="#html/activity/turntableBasicSet.html">欢乐大转盘基本设置</a></li><li><a href="#html/activity/turntableList.html" class="current">欢乐大转盘管理</a></li>');
+                        break;
+                }
+                // 获取活动详情;
+                if (eventId && jumpUrl) {
+                    REQUEST.post(REQUEST.url('inquireAwardsListByEventId'), {"encryptType": 1, "data": {"eventId": eventId}}, function(res) {
+                        if (res.resultCode == 0) {
+                            var res = res.data;
+                            $("#eventName").text(res.eventName);
+                            $("#eventEffectiveTime").html("<strong>" + res.eventEffectiveStartTime + "</strong>&nbsp;至&nbsp;<strong>" + res.eventEffectiveEndTime + "</strong>");
+                            var awardsLen = res.awards.length;
+                            if (awardsLen) {
+                                queryUrl = REQUEST.url('updateAward');
+                                $awardBox.html(template.render('awardListTemplate', res));
+                            } else {
+                                queryUrl = REQUEST.url('insertAward');
+                            }
+                        } else {
+                            TIP.show(2, "查询信息失败");
+                        }
+                    });
+                }
+                var $awardBox = $("#award-box");
+                $("#add-award").on("click", function() {
+                    $awardBox.append(template.render('awardTemplate', 0));
+                });
+                $awardBox.on("click", ".delete-award", function() {
+                    $(this).parent().remove();
+                });
+                $subBtn.on("click", function() {
+                    var awardItems = $awardBox.children(),
+                            $item,
+                            itemArr = [],
+                            itemValues,
+                            valueObj;
+                    for (var i = 0, len = awardItems.length; i < len; i++) {
+                        valueObj = {};
+                        $item = $(awardItems[i]);
+                        itemValues = $item.find("input, textarea");
+                        for (var j = 0, length = itemValues.length; j < length; j++) {
+                            itemValues[j].value && (valueObj[$(itemValues[j]).attr("data-name")] = itemValues[j].value) && (valueObj.eventId = eventId);
+                        }
+                        valueObj.awardName && valueObj.awardNumPerPerson && valueObj.awardNum && valueObj.awardDesc && itemArr.push(valueObj);
+                    }
+                    if (itemArr.length) {
+                        $("#awards").val(JSON.stringify(itemArr));
+                    } else {
+                        $("#awards").val("");
+                    }
+                    $eventAwardInfoForm.trigger('submit');
+                });
+                $eventAwardInfoForm.validate({
+                    ignore: "",
+                    submitHandler: function(form) {
+                        $subBtn.addClass('sub-ing').val("提交中...");
+                        var param = {"encryptType": 1};
+                        REQUEST.form(form, queryUrl, param, function(res) {
+                            if (res.resultCode == 0) {
+                                TIP.show(1, "操作成功");
+                                setTimeout((function() {
+                                    JUMP.to('html/activity/' + jumpUrl + '.html');
+                                }), 1000);
+                            } else {
+                                TIP.show(2, "操作失败");
+                                $subBtn.removeClass('sub-ing').val("确认提交");
+                            }
+                        });
+                    },
+                    rules: {
+                        awards: {required: true}
+                    },
+                    messages: {
+                        awards: {required: "请输入活动奖项设置"}
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

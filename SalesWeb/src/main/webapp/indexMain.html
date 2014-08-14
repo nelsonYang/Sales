@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>首页 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+        <style type="text/css">
+            .company-info { padding-top: 20px; font-family: "Microsoft Yahei"; }
+            .company-info h2 { padding-bottom: 10px; margin-bottom: 20px; border-bottom: 2px solid #dedede; font-size: 24px; color: #454545; font-weight: 400; font-family: "Microsoft Yahei"; }
+            .company-info h2 strong { color: #3c72c8; font-family: "Microsoft Yahei"; font-weight: bold; }
+            .company-info .company-box { height: 180px; overflow: hidden; }
+            .company-info .main-info { height: 140px; width: 250px; padding: 10px 15px 20px; background: #dbe5f4; border-radius: 4px; }
+            .company-info .main-info dd { font-size: 14px; line-height: 2; }
+            .company-info .main-info span { color: #449d44; font-size: 14px; font-weight: bold; }
+            .company-info .today-total { width: 620px; overflow: hidden; }
+            .company-info .today-total a { float: left; display: block; height: 65px; width: 290px; padding: 5px; margin-bottom: 15px; background: #4986e7; color: #fff; font-size: 24px; line-height: 65px; border-radius: 4px; }
+            .company-info .today-total span { display: inline-block; *display: inline; *zoom: 1; width: 115px; height: 65px; margin-right: 5px; font-style: normal; font-size: 28px; line-height: 62px; text-align: center; background: #2964c0; border-radius: 2px; }
+            .company-info .today-total a:hover { text-decoration: none; }
+            .company-info .today-total .blue { background: #5194ff; }
+            .company-info .today-total .blue span { background: #3c72c8; }
+            .company-info .today-total .blue:hover { background: #4f90f7; }
+            .company-info .today-total .green { background: #5cb85c; }
+            .company-info .today-total .green span { background: #419641; }
+            .company-info .today-total .green:hover { background: #5ab35a; }
+            .company-info .today-total .red { background: #d84c4c; }
+            .company-info .today-total .red span { background: #ab2b2b; }
+            .company-info .today-total .red:hover { background: #ce4848; }
+            .company-info .today-total .orange { background: #f7b24f; }
+            .company-info .today-total .orange span { background: #cb7d18; }
+            .company-info .today-total .orange:hover { background: #efac4c; }
+        </style>
+    </head>
+    <div class="company-info">
+        <h2>您好，<strong id="companyName"></strong></h2>
+        <div class="company-box clearfix">
+            <div class="main-info fl">
+                <dl>
+                    <dd>帐号状态：<span>正常</span></dd>
+                    <dd>开通时间：<span id="serviceStartTime"></span></dd>
+                    <dd>到期时间：<strong id="serviceEndTime"></strong></dd>
+                    <dd>联系方式：<span id="linkMobile"></span></dd>
+                    <dd>联系邮箱：<span id="email"></span></dd>
+                </dl>
+            </div>
+            <div class="today-total fl ml20">
+                <a href="#html/data/fansTotal.html" class="blue">
+                    <span id="fansIncreaseCount"></span>
+                    今日新增粉丝
+                </a>
+                <a href="#html/data/siteTotal.html" class="green ml20">
+                    <span id="visitWeisiteCount"></span>
+                    今日官网访问
+                </a>
+                <a href="#html/data/memberRegTotal.html" class="red">
+                    <span id="registerMemberCount"></span>
+                    今日会员注册
+                </a>
+                <a href="#html/data/eventTotal.html" class="orange ml20">
+                    <span id="eventTakeCount"></span>
+                    今日参与活动
+                </a>
+            </div>
+        </div>
+      
+    </div>
+    <script type="text/javascript">
+        seajs.use(['jquery', 'request', 'validation', 'tip', 'formFill'], function($, REQUEST, validate, TIP, FILL) {
+            // 获取公司信息
+            REQUEST.post(REQUEST.url('inquireCompanyInfo'), {"encryptType": 1}, function(res) {
+                if (res.resultCode == 0) {
+                    var res = res.data;
+                    $("#companyName").text(res.companyName);
+                    $("#serviceStartTime").text(res.serviceStartTime);
+                    $("#serviceEndTime").text(res.serviceEndTime);
+                    $("#linkMobile").text(res.linkMobile);
+                    $("#email").text(res.email);
+                } else {
+                    TIP.show(2, "查询信息失败");
+                }
+            });
+            // 获取今日统计信息;
+            REQUEST.post(REQUEST.url('inquireCurrentDayStatics'), {}, function(res) {
+                if (res.resultCode == 0) {
+                    var res = res.data;
+                    $("#fansIncreaseCount").text(res.fansIncreaseCount || 0);
+                    $("#visitWeisiteCount").text(res.visitWeisiteCount || 0);
+                    $("#registerMemberCount").text(res.registerMemberCount || 0);
+                    $("#eventTakeCount").text(res.eventTakeCount || 0);
+                } else {
+                    TIP.show(2, "查询信息失败");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

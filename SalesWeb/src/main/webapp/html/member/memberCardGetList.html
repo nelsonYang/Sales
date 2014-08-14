@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>会员卡领取记录 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/member/memberList.html">会员管理</a></li>
+        <li><a href="#html/member/memberLevelList.html">会员等级设置</a></li>
+        <li><a href="#html/member/memberCardBasicSet.html">会员卡基本设置</a></li>
+        <li><a href="#html/member/memberCardList.html">会员卡</a></li>
+        <li><a href="#html/member/memberCardGetList.html" class="current">会员卡领取记录</a></li>
+        <!-- <li><a href="#html/member/customerPasswordSet.html">商家密码设置</a></li> -->
+    </ul>
+    <!-- <div class="form-box search-box dn">
+        <form method="post" id="queryMemberList">
+            <div class="form-group clearfix">
+                <div class="inner-group fl">
+                    <div class="label-item fl">
+                        <label class="input-item" for="OldPassword">关键字：</label>
+                    </div>
+                    <div class="input-box fl"><input type="text" class="normal-input" name="" id=""></div>
+                </div>
+                <div class="button-box fl ml15">
+                    <input type="submit" class="blue-btn form-small-btn" value="搜索">
+                    <input type="button" class="gray-btn form-normal-btn ml20" value="导出会员表">
+                </div>
+            </div>
+        </form>
+    </div> -->
+    <!-- 表格 -->
+    <div class="table-box pt20">
+        <table>
+            <thead>
+            <th class="w100" >ID</th>
+            <th class="w150">会员卡ID</th>
+            <th class="w150">会员ID</th>
+            <th class="w200">会员手机号</th>
+            <th>领取时间</th>
+            </thead>
+            <tbody id="table-list">
+            </tbody>
+        </table>
+    </div>
+    <!-- 分页 -->
+    <div class="page-box" id="page-box"></div>
+    <!-- 模板 -->
+    <script id="memberCardGetListTemplate" type="text/html">
+        <% var memberCardGet, memberCardMemberId; %>
+        <% for ( i = 0, len = dataList.length; i < len; i++ ) { memberCardGet = dataList[i]; memberId = memberCardGet.memberId; %>
+        <tr>
+        <td><%=memberCardGet.memberCardMemberId%></td>
+        <td><%=memberCardGet.memberCardId%></td>
+        <td><%=memberCardGet.memberId%></td>
+        <td><%=memberCardGet.memberNO%></td>
+        <td><%=memberCardGet.createTime%></td>
+        </tr>
+        <% }%>
+    </script>
+    <script>
+        seajs.use(['jquery', 'request', 'template', 'pager', 'tip'], function($, REQUEST, template, pager, TIP) {
+            var $pageBox = $('#page-box');
+            var $subBtn = $("#sub-btn");
+            var $tableList = $("#table-list");
+            var queryUrl = REQUEST.url("inquirePageMemberCardMemberList");
+            $pageBox.pager({
+                form: "",
+                url: queryUrl,
+                param: {"data": {"pageNo": 1, "pageCount": 10}, "encryptType": 1},
+                callback: function(res) {
+                    if (res.resultCode == 0) {
+                        console.log(res);
+                        res = res.data;
+                        res.dataList && $tableList.html(template.render('memberCardGetListTemplate', res));
+                    } else {
+                        TIP.show(2, "查询失败");
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

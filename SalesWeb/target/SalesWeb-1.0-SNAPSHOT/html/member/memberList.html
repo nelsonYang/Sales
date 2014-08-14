@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>会员管理 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/member/memberList.html" class="current">会员管理</a></li>
+        <li><a href="#html/member/memberLevelList.html">会员等级设置</a></li>
+        <li><a href="#html/member/memberCardBasicSet.html">会员卡基本设置</a></li>
+        <li><a href="#html/member/memberCardList.html">会员卡</a></li>
+        <li><a href="#html/member/memberCardGetList.html">会员卡领取记录</a></li>
+        <!-- <li><a href="#html/member/customerPasswordSet.html">商家密码设置</a></li> -->
+    </ul>
+    <!-- <div class="form-box search-box dn">
+        <form method="post" id="queryMemberList">
+            <div class="form-group clearfix">
+                <div class="inner-group fl">
+                    <div class="label-item fl">
+                        <label class="input-item" for="OldPassword">关键字：</label>
+                    </div>
+                    <div class="input-box fl"><input type="text" class="normal-input" name="" id=""></div>
+                </div>
+                <div class="button-box fl ml15">
+                    <input type="submit" class="blue-btn form-small-btn" value="搜索">
+                    <input type="button" class="gray-btn form-normal-btn ml20" value="导出会员表">
+                </div>
+            </div>
+        </form>
+    </div> -->
+    <!-- 表格 -->
+    <div class="table-box pt20">
+        <table>
+            <thead>
+            <th class="w50" >序号</th>
+            <th class="w150">手机号</th>
+            <th class="w100">姓名</th>
+            <th class="w100">昵称</th>
+            <th class="w150">会员卡号</th>
+            <th class="w100">会员等级</th>
+            <th class="w50">积分</th>
+            <th class="w150">注册时间</th>
+            <th class="w100">操作</th>
+            </thead>
+            <tbody id="table-list">
+            </tbody>
+        </table>
+    </div>
+    <!-- 分页 -->
+    <div class="page-box" id="page-box"></div>
+    <!-- 模板 -->
+    <script id="memberListTemplate" type="text/html">
+        <% var member, memberId; %>
+        <% for ( i = 0, len = dataList.length; i < len; i++ ) { member = dataList[i]; memberId = member.memberId; %>
+        <tr>
+        <td><%=memberId%></td>
+        <td><%=member.mobile%></td>
+        <td><%=member.realName%></td>
+        <td><%=member.weixinNo%></td>
+        <td><%=member.mobile%></td>
+        <td>普通会员</td>
+        <td></td>
+        <td><%=member.createTime%></td>
+        <td>
+        <a href="#html/member/memberDetail.html?memberId=<%=memberId%>">详情</a>
+        <a href="javascript:;" data-id="<%=memberId%>" class="opt">删除</a>
+        </td>
+        </tr>
+        <% }%>
+    </script>
+    <script>
+        seajs.use(['jquery', 'request', 'template', 'pager', 'tip'], function($, REQUEST, template, pager, TIP) {
+            var $queryMemberList = $("#queryMemberList");
+            var $pageBox = $('#page-box');
+            var $subBtn = $("#sub-btn");
+            var $tableList = $("#table-list");
+            var queryUrl = REQUEST.url("inquirePageMemberList");
+            // $queryMemberList.on("submit", function(){
+            $pageBox.pager({
+                form: "",
+                url: queryUrl,
+                param: {"data": {"pageNo": 1, "pageCount": 10}, "encryptType": 1},
+                callback: function(res) {
+                    if (res.resultCode == 0) {
+                        res = res.data;
+                        res.dataList && $tableList.html(template.render('memberListTemplate', res));
+                    } else {
+                        TIP.show(2, "查询失败");
+                    }
+                }
+            });
+            /*    return false;
+             }).trigger('submit');*/
+
+            var deleteUrl = REQUEST.url('deleteMember');
+            $tableList.on("click", ".opt", function() {
+                var $this = $(this);
+                REQUEST.post(deleteUrl, {"data": {"memberId": $this.attr("data-id")}}, function(res) {
+                    if (res.resultCode == 0) {
+                        TIP.show(1, "操作成功");
+                        $this.parents("tr").remove();
+                    } else {
+                        TIP.show(2, "操作失败");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

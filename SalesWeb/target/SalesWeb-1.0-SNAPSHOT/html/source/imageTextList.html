@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content=""/>
+        <meta name="keywords" content=""/>
+        <title>图文消息管理 微信营销平台</title>
+        <link rel="stylesheet" href="../../css/new-basic.css">
+        <link rel="stylesheet" href="../../css/msg.css">
+    </head>
+    <ul class="form-tab clearfix">
+        <li><a href="#html/source/imageTextList.html" class="current">图文消息管理</a></li>
+        <li><a href="#html/source/urlList.html">自定义URL</a></li>
+        <li><a href="#html/source/systemUrlList.html">系统URL查询</a></li>
+    </ul>
+    <div class="msg-list clearfix">
+        <div class="inner-list fl">
+            <div class="msg-button-box mb20">
+                <a href="#html/source/singleMsgSet.html" class="single-msg">
+                    <i></i>
+                    <strong>单图文消息</strong>
+                </a>
+                <a href="#html/source/multiMsgSet.html" class="multi-msg">
+                    <i></i>
+                    <strong>多图文消息</strong>
+                </a>
+            </div>
+        </div>
+        <div class="inner-list fl" id="table-list">
+        </div>
+    </div>
+    <div class="page-box" id="page-box"></div>
+    <!-- 模板 -->
+    <script id="msgListTemplate" type="text/html">
+        <% var msg, msgId, msgContents; %>
+        <% for ( i = 0, len = resourcesList.length; i < len; i++ ) { msg = resourcesList[i]; msgId = msg.resourcesId; msgContents = msg.content; %>
+        <div class="msg-box">
+        <div class="msg-info">
+        <em><%=msg.createTime%></em>
+        </div>
+        <% for ( j = 0, jlen = msgContents.length; j < jlen; j++ ) { var msgContent = msgContents[j]; %>
+        <% if(j==0){ %>
+        <div class="msg-cover-box">
+        <div class="cover-img-box">
+        <img src="<%=msgContent.resoucesImageURL%>">
+        </div>
+        <h4>
+        <a href="javasript:;"><%=msgContent.resourcesTitle%></a>
+        </h4>
+        </div>
+        <%} else {%>
+        <div class="msg-group clearfix">
+        <img src="<%=msgContent.resoucesImageURL%>">
+        <h4><a href="javascript:;"><%=msgContent.resourcesTitle%></a></h4>
+        </div>
+        <%}%>
+        <% }%>
+        <div class="msg-opr clearfix">
+        <div class="opr-item fl">
+        <% if(msg.resourcesType=="1"){ %>
+        <a href="#html/source/multiMsgSet.html?msgId=<%=msgId%>" >
+        <i class="edit"></i>
+        </a>
+        <%} else {%>
+        <a href="#html/source/singleMsgSet.html?msgId=<%=msgId%>" >
+        <i class="edit"></i>
+        </a>
+        <%}%>
+        </div>
+        <div class="opr-item fl">
+        <a href="javascript:;" class="opt" data-id="<%=msgId%>">
+        <i class="del"></i>
+        </a>
+        </div>
+        </div>
+        </div>
+        <% }%>
+    </script>
+    <script>
+        seajs.use(['jquery', 'request', 'template', 'pager', 'tip'], function($, REQUEST, template, pager, TIP) {
+            var $pageBox = $('#page-box');
+            var $tableList = $("#table-list");
+            var queryUrl = REQUEST.url("inquirePageResourcesList");
+
+            $pageBox.pager({
+                form: "",
+                url: queryUrl,
+                param: {"data": {"pageNo": 1, "pageCount": 3,"resourcesType":"1"}, "encryptType": 1},
+                callback: function(res) {
+                    if (res.resultCode == 0) {
+                        console.log(res);
+                        res = res.data;
+                        res.resourcesList && $tableList.html(template.render('msgListTemplate', res));
+                    } else {
+                        TIP.show(2, "查询失败");
+                    }
+                }
+            });
+
+            var deleteUrl = REQUEST.url('deleteResources');
+            $tableList.on("click", ".opt", function() {
+                var $this = $(this);
+                REQUEST.post(deleteUrl, {"encryptType": 0, "data": {"resourcesId": $this.attr("data-id")}}, function(res) {
+                    if (res.resultCode == 0) {
+                        TIP.show(1, "操作成功");
+                        $this.parents(".msg-box").remove();
+                    } else {
+                        TIP.show(2, "操作失败");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

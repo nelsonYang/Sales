@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../../js/mobile/jquery.mobile-1.3.2.min.css">
+        <script src="../../js/mobile/jquery-1.8.3.min.js"></script>
+        <script src="../../js/mobile/jquery.mobile-1.3.2.min.js"></script>
+        <script src="../../js/sea.js" id="seajsnode"></script>
+        <script src="../../js/seajs-config.js"></script>
+        <style>
+            .mlist-item div{
+                padding-top: 10px;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div data-role="page" id="reservationDetail">
+            <div data-role="header" >
+                <h1>预约</h1>
+                <!--"reservationId", "keyword", "matchType", "messageTitle", "messageImageURL", "reservationConfigId", "reservationAddress", "reservationTelephone", "reservationDesc", "companyId"-->
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#reservationDetail" data-icon="home" data-theme="b">预约说明</a></li>
+                        <li><a href="reservationList.html" data-icon="arrow-r">我的预约列表</a></li>
+                    </ul>
+                </div>   
+            </div>
+            <div data-role="content" id="reservationDiv"  style="padding: 0px;">
+                <div>
+                    <img id="messageURL" src="../../images/yuyue.jpg"/>
+                </div>
+                <div  style="padding:15px;border: 5px solid #dedede;background: #e2e2e2;margin: 10px; -moz-border-radius: 10px;  -webkit-border-radius: 10px;border-radius:10px;">
+
+                    <div style=" padding-top: 20px;">
+                        <label style="font-weight:bold;">预约名称：</label>
+                        <label id="reservationDesc"></label>
+                    </div>
+                    <div style=" padding-top: 20px;">
+                        <label style="font-weight:bold;">预约说明：</label>
+                        <label id="reservationDesc"></label>
+                    </div>  
+
+                    <div style=" padding-top: 20px;">
+                        <label style="font-weight:bold;">预约地点：</label>
+                        <label id="reservationAddress"></label>
+                    </div>  
+                    <div style=" padding-top: 20px;">
+                        <label style="font-weight:bold;">预约电话：</label>
+                        <label id="reservationTelephone"></label>
+                    </div>  
+                </div>
+
+                <div>
+                    <div style="padding: 10px 10px;">
+                        <input type="button"  id="reservationBtn" data-inline="true" value="预约" >
+                    </div>
+                    <div data-role="footer">
+                        <h4>版权所有微cool工作室</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            seajs.use(['jquery', 'request', 'validation', 'tip', 'modules/jsonFill.js', 'upload', 'search', 'storage', 'static'], function($, REQUEST, validate, TIP, FILL, upload, SEARCH, STORAGE, STATIC) {
+            var $reservationDiv = $("#reservationDiv");
+            var $messageURL = $("#messageURL");
+            var $reservationBtn = $('#reservationBtn');
+            var param = SEARCH.getParam(location.search);
+            var token = param.token;
+            if (!token) {
+            token = STORAGE.get(STATIC.COMPANY_TOKEN);
+            if (token) {
+            STORAGE.set(STATIC.COMPANY_TOKEN, token);
+            }
+            }
+            var reservationId = param.reservationId;
+            if (reservationId) {
+            // 获取优惠券设置详情;
+            //"reservationId", "keyword", "matchType", "messageTitle", "messageImageURL", "reservationConfigId", "reservationAddress", "reservationTelephone", "reservationDesc", "companyId"
+            REQUEST.post(REQUEST.url('inquireReservationByIdAndToken'), {"encryptType": 2, "data": {"reservationId": reservationId, "token": token}}, function(res) {
+            if (res.resultCode == 0) {
+            var res = res.data;
+            reservationId = res.reservationId;
+            var messageImageURL = res.messageImageURL;
+            if (messageImageURL) {
+            $messageURL.attr('src', messageImageURL);
+            }
+            FILL.fill($reservationDiv, res);
+            } else {
+            TIP.show(2, "查询信息失败");
+            }
+            });
+            } else {
+            alert("不存在预约项目");
+            }
+            $reservationBtn.on('click', function() {
+            window.location.href = "reservationDialog.html?token=" + token + "&reservationId=" + reservationId;
+            });
+            });
+        </script>
+
+    </body>
+</html>
