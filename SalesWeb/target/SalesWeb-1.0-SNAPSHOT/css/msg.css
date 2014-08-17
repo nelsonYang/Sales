@@ -9,7 +9,7 @@
     *zoom: 1;
     width: 50px;
     height: 56px;
-    background: url("../../images/image-text-bg.png") 0 0 no-repeat;
+    background: url("../images/image-text-bg.png") 0 0 no-repeat;
 }
 .msg-button-box a strong { display: block; margin-top: 6px; color: #888; font-weight: normal; }
 .msg-button-box a:hover,
@@ -41,7 +41,7 @@
 .msg-box .msg-opr { height: 40px; border-top: 1px solid #dedede; background: #f2f2f2; border-radius: 0 0 4px 4px; }
 .msg-box .msg-opr .opr-item { width: 50%; margin: 6px 0; text-align: center; }
 .msg-box .msg-opr a { display: inline-block; *display: inline; *zoom: 1; width: 16px; height: 16px; padding: 6px 15px; border-radius: 3px; color: #454545; line-height: 16px; }
-.msg-box .msg-opr i { display: inline-block; *display: inline; *zoom: 1; width: 16px; height: 16px; margin-top: -3px; background: url(../../images/add-del-bg.png) 0 0 no-repeat; }
+.msg-box .msg-opr i { display: inline-block; *display: inline; *zoom: 1; width: 16px; height: 16px; margin-top: -3px; background: url(../images/add-del-bg.png) 0 0 no-repeat; }
 .msg-box .msg-opr .edit { background-position: -56px 0; }
 .msg-box .msg-opr .del { background-position: -32px 0; }
 .msg-box .msg-opr .add { background-position: 0 0; }

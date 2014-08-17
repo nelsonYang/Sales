@@ -30,6 +30,124 @@
             .company-info .today-total .orange { background: #f7b24f; }
             .company-info .today-total .orange span { background: #cb7d18; }
             .company-info .today-total .orange:hover { background: #efac4c; }
+            .navbar {
+                padding-top: 20px;font-family: "Microsoft Yahei"; 
+                background-color: #dbe5f4; border-radius: 4px; border: 0.5px;
+               height:500px;
+               margin-right: 115px;
+            }
+            .navbar .navItem{
+                          
+                            width:120px;
+                            height: 120px;
+                           background-color: #5194ff;
+                            margin-left: 50px;
+                            margin-bottom: 20px;
+                            border-radius: 4px;
+                           
+            }
+            .navbar .navItem span{
+                margin-left: 25px;
+                 color: #449d44;
+                 font-size: 14px; 
+                 font-weight: bold;
+                 text-align: center;
+            }
+            .navbar .navItem .fl {float: left}
+            .navbar .navItem .account {
+                 margin-left:  25px;
+                 margin-top:  20px;
+                 margin-bottom: 15px;
+                display:block;
+                width: 65px;
+                height:65px;
+                background-image: url('images/account.png');
+            }
+            
+            .navbar .navItem .fruit {
+                 margin-left:  25px;
+                 margin-top:  20px;
+                 margin-bottom: 15px;
+                display:block;
+                width: 65px;
+                height:65px;
+                background-image: url('images/fruit.png');
+            }
+            .navbar .navItem .martial {
+                 margin-left:  25px;
+                 margin-top:  20px;
+                 margin-bottom: 15px;
+                display:block;
+                width: 65px;
+                height:65px;
+                background-image: url('images/material.png');
+            }
+            
+            .navbar .navItem .microbar {
+                 margin-left:  25px;
+                 margin-top:  20px;
+                 margin-bottom: 15px;
+                display:block;
+                width: 65px;
+                height:65px;
+                background-image: url('images/microbar.png');
+            }
+              .navbar .navItem .reserve {
+                 margin-left:  25px;
+                 margin-top:  20px;
+                 margin-bottom: 15px;
+                display:block;
+                width: 65px;
+                height:65px;
+                background-image: url('images/reserve.png');
+            }
+            
+            .navbar .navItem .scratch {
+                 margin-left:  25px;
+                 margin-top:  20px;
+                 margin-bottom: 15px;
+                display:block;
+                width: 65px;
+                height:65px;
+                background-image: url('images/scratch.png');
+            }
+             .navbar .navItem .user {
+                 margin-left:  25px;
+                 margin-top:  20px;
+                 margin-bottom: 15px;
+                display:block;
+                width: 65px;
+                height:65px;
+                background-image: url('images/user.png');
+            }
+             .navbar .navItem .store {
+                 margin-left:  25px;
+                 margin-top:  20px;
+                 margin-bottom: 15px;
+                display:block;
+                width: 65px;
+                height:65px;
+                background-image: url('images/stores.png');
+            }
+              .navbar .navItem .turntable {
+                 margin-left:  25px;
+                 margin-top:  20px;
+                 margin-bottom: 15px;
+                display:block;
+                width: 65px;
+                height:65px;
+                background-image: url('images/turntable.png');
+            }
+               .navbar .navItem .web {
+                 margin-left:  25px;
+                 margin-top:  20px;
+                 margin-bottom: 15px;
+                display:block;
+                width: 65px;
+                height:65px;
+                background-image: url('images/web.png');
+            }
+          
         </style>
     </head>
     <div class="company-info">
@@ -64,6 +182,61 @@
             </div>
         </div>
       
+    </div>
+    <div class="navbar" >
+        <div class="navItem fl ">
+            <a href="#html/myWeixin/firstFollowSet.html" class="account">
+              </a>
+            <span>我的帐号</span>
+        </div>
+          <div class="navItem fl ">
+            <a href="#html/source/imageTextList.html" class="martial">
+              </a>
+            <span>素材管理</span>
+        </div>
+        <div class="navItem fl ">
+            <a href="#html/microWeb/basicSet.html" class="web">
+              </a>
+            <span>微站管理</span>
+        </div>
+        <div class="navItem fl ">
+            <a href="#html/companyMicroApp/reserveBasicSet.html" class="reserve">
+              </a>
+            <span>预约管理</span>
+        </div>
+          <div class="navItem fl ">
+            <a href="#html/member/memberCardList.html" class="user">
+              </a>
+            <span>会员卡</span>
+        </div>
+         <div class="navItem fl ">
+            <a href="#html/coupon/couponSet.html" class="microbar">
+              </a>
+            <span>优惠券</span>
+        </div>
+         
+         <div class="navItem fl ">
+            <a href="#html/lbs/lbsSet.html" class="store">
+              </a>
+            <span>LBS门店</span>
+        </div>
+        <div class="navItem fl ">
+            <a href="#html/activity/fruitBasicSet.html" class="fruit">
+              </a>
+            <span>切水果</span>
+        </div>
+          <div class="navItem fl ">
+            <a href="#html/activity/scratchCardBasicSet.html" class="scratch">
+              </a>
+            <span>刮刮卡</span>
+        </div>
+          <div class="navItem fl ">
+            <a href="#html/activity/turntableBasicSet.html" class="turntable">
+              </a>
+            <span>大转盘</span>
+        </div>
+    
+        
     </div>
     <script type="text/javascript">
         seajs.use(['jquery', 'request', 'validation', 'tip', 'formFill'], function($, REQUEST, validate, TIP, FILL) {
